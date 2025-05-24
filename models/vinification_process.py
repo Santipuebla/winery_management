@@ -1,13 +1,13 @@
 import uuid 
 from models.db import db 
-
 class VinificationProcess(db.Model):
-    __tablename__: "VinificationProcess"
+    __tablename__ = 'VinificationProcess'
 
     id = db.Column (db.String(50), primary_key=True, default=lambda: str(uuid.uuid4()))
     start_date = db.Column(db.Date, nullable = False) 
     end_date = db.Column (db.Date, nullable = False)
     current_stage = db.Column(db.String(50), nullable = False)
+    description = db.Column (db.Text, nullable = True)
     id_variety = db.relationship ('GrapeVariety', backref = 'VinificationProcess', lazy = True)
     id_reception = db.relationship ('ReceptionStage', backref = 'VinificationProcess', lazy = True)
     id_fermentation = db.relationship ('FermentationStage', backref = 'VinificationProcess', lazy = True)
@@ -26,8 +26,8 @@ class VinificationProcess(db.Model):
     def serialize (self):
         {
             'id' :self.id,
-            'start_date': self.start_date,
-            'end_date': self.end_date,
+            'start_date': str(self.start_date),
+            'end_date': str(self.end_date),
             'current_stage': self.current_stage,
             'id_variety': self.id_variety,
             'id_reception': self.id_reception,

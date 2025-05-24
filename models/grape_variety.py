@@ -1,7 +1,7 @@
 import uuid
 from models.db import db 
-class GrapeVariety (db.model):
-    __tablename__ : "GrapeVariety"
+class GrapeVariety (db.Model):
+    __tablename__ = 'GrapeVariety'
     
     id = db.Column (db.String(50), primary_key=True, default=lambda: str(uuid.uuid4()))
     grape_name = db.Column (db.String(50), nullable = False)
