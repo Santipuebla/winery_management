@@ -4,7 +4,7 @@ from models.db import db
 class FermentationStage(db.Model):
     __tablename__ = 'fermentation_stage' 
 
-    id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4())) 
+    id = db.Column(db.String(36), primary_key=True, unique=True, default=lambda: str(uuid.uuid4())) 
     fermentation_start_date = db.Column(db.Date, nullable=False)
     fermentation_end_date = db.Column(db.Date, nullable=True) 
     density = db.Column(db.Float, nullable=False)
