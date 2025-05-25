@@ -15,19 +15,19 @@ def allowed_file(filename):
 @bottling.route("/new", methods=["GET", "POST"])
 def add_bottling_stage():
     if request.method == "POST":
-        bottling_date = request.form["bottling_date"]
-        bottles_quantity = request.form["bottles_quantity"]
-        bottles_format = request.form["bottles_format"]
-        bottling_lot_number = request.form["bottling_lot_number"]
-        observations = request.form["observations"]
         vinification_process_id = request.form["vinification_process_id"]
 
+        existing_stage = BottlingStage.query.filter_by(vinification_process_id=vinification_process_id).first()
+        if existing_stage:
+            flash("Ya existe una etapa de embotellado para este proceso de vinificación.", "error")
+            return redirect(url_for("bottling.add_bottling_stage"))
+
         new_stage = BottlingStage(
-            bottling_date=datetime.strptime(bottling_date, "%Y-%m-%d"),
-            bottles_quantity=int(bottles_quantity),
-            bottles_format=bottles_format,
-            bottling_lot_number=bottling_lot_number,
-            observations=observations,
+            bottling_date=datetime.strptime(request.form["bottling_date"], "%Y-%m-%d"),
+            bottles_quantity=int(request.form["bottles_quantity"]),
+            bottles_format=request.form["bottles_format"],
+            bottling_lot_number=request.form["bottling_lot_number"],
+            observations=request.form["observations"],
             vinification_process_id=vinification_process_id
         )
 
@@ -44,12 +44,22 @@ def edit_bottling_stage(id):
     stage = BottlingStage.query.get_or_404(id)
 
     if request.method == "POST":
+        vinification_process_id = request.form["vinification_process_id"]
+
+        existing_stage = BottlingStage.query.filter(
+            BottlingStage.vinification_process_id == vinification_process_id,
+            BottlingStage.id != id
+        ).first()
+        if existing_stage:
+            flash("Ya existe otra etapa de embotellado para este proceso de vinificación.", "error")
+            return redirect(url_for("bottling.edit_bottling_stage", id=id))
+
         stage.bottling_date = datetime.strptime(request.form["bottling_date"], "%Y-%m-%d")
         stage.bottles_quantity = int(request.form["bottles_quantity"])
         stage.bottles_format = request.form["bottles_format"]
         stage.bottling_lot_number = request.form["bottling_lot_number"]
         stage.observations = request.form["observations"]
-        stage.vinification_process_id = request.form["vinification_process_id"]
+        stage.vinification_process_id = vinification_process_id
 
         db.session.commit()
         flash("Etapa de embotellado actualizada exitosamente.", "success")
