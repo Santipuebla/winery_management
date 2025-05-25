@@ -11,8 +11,8 @@ class BottlingStage(db.Model):
     bottling_lot_number = db.Column(db.String(50), nullable=False)
     observations = db.Column(db.Text, nullable=False)
 
-    vinification_process_id = db.Column(db.String(50), db.ForeignKey('vinification_process.id'), nullable=False)
-    vinification_process = db.relationship("VinificationProcess", backref='bottlingstages', lazy=True)
+    vinification_process_id = db.Column(db.String(50), db.ForeignKey("vinification_process.id"), nullable=False, unique=True) 
+    vinification_process = db.relationship("VinificationProcess", back_populates="bottlingstage", uselist=False)
 
     def __init__(self, bottling_date, bottles_quantity, bottles_format, bottling_lot_number, observations, vinification_process_id):
         self.bottling_date = bottling_date

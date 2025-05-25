@@ -16,21 +16,20 @@ def allowed_file(filename):
 @reception.route("/new", methods=["GET", "POST"])
 def add_reception_stage():
     if request.method == "POST":
-        reception_date = request.form["reception_date"]
-        weight_kg = request.form["weight_kg"]
-        brix_degrees = request.form["brix_degrees"]
-        ph_value = request.form["ph_value"]
-        temperature_celcius = request.form["temperature_celcius"]
-        observations = request.form["observations"]
         vinification_process_id = request.form['vinification_process_id']
 
+        existing_stage = ReceptionStage.query.filter_by(vinification_process_id=vinification_process_id).first()
+        if existing_stage:
+            flash("Ya existe una etapa de recepción para este proceso de vinificación.", "error")
+            return redirect(url_for("reception.add_reception_stage"))
+
         new_stage = ReceptionStage(
-            reception_date=datetime.strptime(reception_date, "%Y-%m-%d"),
-            weight_kg=float(weight_kg),
-            brix_degrees=float(brix_degrees),
-            ph_value=float(ph_value),
-            temperature_celcius=float(temperature_celcius),
-            observations=observations,
+            reception_date=datetime.strptime(request.form["reception_date"], "%Y-%m-%d"),
+            weight_kg=float(request.form["weight_kg"]),
+            brix_degrees=float(request.form["brix_degrees"]),
+            ph_value=float(request.form["ph_value"]),
+            temperature_celcius=float(request.form["temperature_celcius"]),
+            observations=request.form["observations"],
             vinification_process_id=vinification_process_id
         )
 
@@ -47,13 +46,23 @@ def edit_reception_stage(id):
     stage = ReceptionStage.query.get_or_404(id)
 
     if request.method == "POST":
+        vinification_process_id = request.form["vinification_process_id"]
+
+        existing_stage = ReceptionStage.query.filter(
+            ReceptionStage.vinification_process_id == vinification_process_id,
+            ReceptionStage.id != id
+        ).first()
+        if existing_stage:
+            flash("Ya existe otra etapa de recepción para este proceso de vinificación.", "error")
+            return redirect(url_for("reception.edit_reception_stage", id=id))
+
         stage.reception_date = datetime.strptime(request.form["reception_date"], "%Y-%m-%d")
         stage.weight_kg = float(request.form["weight_kg"])
         stage.brix_degrees = float(request.form["brix_degrees"])
         stage.ph_value = float(request.form["ph_value"])
         stage.temperature_celcius = float(request.form["temperature_celcius"])
         stage.observations = request.form["observations"]
-        stage.vinification_process_id = request.form["vinification_process_id"]
+        stage.vinification_process_id = vinification_process_id
 
         db.session.commit()
         flash("Datos actualizados correctamente.", "success")
@@ -74,6 +83,5 @@ def delete_reception_stage(id):
 
 @reception.route('/', methods=['GET'])
 def get_reception_stages():
-    
     stages = ReceptionStage.query.all()
     return render_template('reception/list.html', stages=stages)

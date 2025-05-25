@@ -10,23 +10,21 @@ aging = Blueprint("aging", __name__, url_prefix="/aging")
 @aging.route("/new", methods=["GET", "POST"])
 def add_aging_stage():
     if request.method == "POST":
-        aging_start_date = request.form["aging_start_date"]
-        aging_end_date = request.form["aging_end_date"]
-        vessel_type = request.form["vessel_type"]
-        volume_liters = request.form["volume_liters"]
-        vessel_identifier = request.form["vessel_identifier"]
-        location = request.form["location"]
-        observations = request.form["observations"]
         vinification_process_id = request.form["vinification_process_id"]
 
+        existing_stage = AgingStage.query.filter_by(vinification_process_id=vinification_process_id).first()
+        if existing_stage:
+            flash("Ya existe una etapa de crianza para este proceso de vinificación.", "error")
+            return redirect(url_for("aging.add_aging_stage"))
+
         new_stage = AgingStage(
-            aging_start_date=datetime.strptime(aging_start_date, "%Y-%m-%d"),
-            aging_end_date=datetime.strptime(aging_end_date, "%Y-%m-%d"),
-            vessel_type=vessel_type,
-            volume_liters=float(volume_liters),
-            vessel_identifier=vessel_identifier,
-            location=location,
-            observations=observations,
+            aging_start_date=datetime.strptime(request.form["aging_start_date"], "%Y-%m-%d"),
+            aging_end_date=datetime.strptime(request.form["aging_end_date"], "%Y-%m-%d"),
+            vessel_type=request.form["vessel_type"],
+            volume_liters=float(request.form["volume_liters"]),
+            vessel_identifier=request.form["vessel_identifier"],
+            location=request.form["location"],
+            observations=request.form["observations"],
             vinification_process_id=vinification_process_id
         )
 
@@ -43,6 +41,17 @@ def edit_aging_stage(id):
     stage = AgingStage.query.get_or_404(id)
 
     if request.method == "POST":
+        vinification_process_id = request.form["vinification_process_id"]
+
+        existing_stage = AgingStage.query.filter(
+            AgingStage.vinification_process_id == vinification_process_id,
+            AgingStage.id != id
+        ).first()
+
+        if existing_stage:
+            flash("Ya existe otra etapa de crianza para este proceso de vinificación.", "error")
+            return redirect(url_for("aging.edit_aging_stage", id=id))
+
         stage.aging_start_date = datetime.strptime(request.form["aging_start_date"], "%Y-%m-%d")
         stage.aging_end_date = datetime.strptime(request.form["aging_end_date"], "%Y-%m-%d")
         stage.vessel_type = request.form["vessel_type"]
@@ -50,7 +59,7 @@ def edit_aging_stage(id):
         stage.vessel_identifier = request.form["vessel_identifier"]
         stage.location = request.form["location"]
         stage.observations = request.form["observations"]
-        stage.vinification_process_id = request.form["vinification_process_id"]
+        stage.vinification_process_id = vinification_process_id
 
         db.session.commit()
         flash("Etapa de crianza actualizada correctamente.", "success")
@@ -84,8 +93,8 @@ def get_aging_stages():
     stages = query.all()
 
     return render_template("aging/list.html", stages=stages,
-                           current_filter_vessel=filter_vessel,
-                           current_filter_location=filter_location)
+                        current_filter_vessel=filter_vessel,
+                        current_filter_location=filter_location)
 
 
 

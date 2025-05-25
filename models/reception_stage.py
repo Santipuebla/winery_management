@@ -12,16 +12,17 @@ class ReceptionStage(db.Model):
     temperature_celcius = db.Column(db.Float, nullable=False)
     observations = db.Column(db.Text, nullable=False)
 
-    vinification_process_id = db.Column(db.String(50), db.ForeignKey('vinification_process.id'), nullable=False)
-    vinification_process = db.relationship("VinificationProcess", backref='receptionstages', lazy=True)
+    vinification_process_id = db.Column(db.String(50), db.ForeignKey("vinification_process.id"), nullable=False, unique=True)
+    vinification_process = db.relationship("VinificationProcess", back_populates="receptionstage", uselist=False)
 
-    def __init__(self, reception_date, weight_kg, brix_degrees, ph_value, temperature_celcius, observations):
+    def __init__(self, reception_date, weight_kg, brix_degrees, ph_value, temperature_celcius, observations, vinification_process_id):
         self.reception_date = reception_date
         self.weight_kg = weight_kg
         self.brix_degrees = brix_degrees
         self.ph_value = ph_value
         self.temperature_celcius = temperature_celcius
         self.observations = observations
+        self.vinification_process_id = vinification_process_id
 
     def serialize(self):
         return {
@@ -32,5 +33,6 @@ class ReceptionStage(db.Model):
             "ph_value": self.ph_value,
             "temperature_celcius": self.temperature_celcius,
             "observations": self.observations,
-            "vinification_process_id": self.vinification_process.id
+            "vinification_process_id": self.vinification_process_id
         }
+
