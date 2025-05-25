@@ -13,8 +13,9 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @grape_varieties.route('/')
-def get_grape_varieties(): 
-    grape_varieties_list = GrapeVariety.query.all()
+def get_grape_varieties():
+    # Solo obtenemos las variedades con status = True (activas)
+    grape_varieties_list = GrapeVariety.query.filter_by(status=True).all()
     return render_template('grape_varieties/grape_varieties.html', grape_varieties=grape_varieties_list)
 
 @grape_varieties.route('/new', methods=['POST'])
@@ -81,18 +82,13 @@ def edit_grape_variety(id): # Renombrada
     # Si es GET, se renderiza un formulario de edición HTML
     return render_template('grape_varieties/edit_grape_varieties.html', grape_varieties=grape_variety)
 
-
 @grape_varieties.route('/delete/<string:id>', methods=['POST'])
-def delete_grape_variety(id): # Renombrada
+def delete_grape_variety(id):
     grape_variety = GrapeVariety.query.get_or_404(id)
 
-    # Eliminamos la imagen si existe
-    if grape_variety.grape_image:
-        image_path = os.path.join(UPLOAD_FOLDER, grape_variety.grape_image)
-        if os.path.exists(image_path):
-            os.remove(image_path)
+    # NO borramos la imagen al hacer eliminación lógica. Si la variedad se reactiva, la imagen debe seguir asociada.
 
-    db.session.delete(grape_variety)
+    grape_variety.status = False  
     db.session.commit()
-    flash('Variedad eliminada exitosamente!', 'success')
+    flash('Variedad eliminada exitosamente!', 'success') # Pasa a ser inactivo. 
     return redirect(url_for('grape_varieties.get_grape_varieties'))
