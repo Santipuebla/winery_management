@@ -1,7 +1,7 @@
 from models.db import db
 from flask import Blueprint, jsonify, request
-from models.grape_variety import GrapeVariety 
 from models.vinification_process import VinificationProcess
+from models.fermentation_stage import FermentationStage
 import datetime
 
 fermentation = Blueprint('fermentation', __name__, url_prefix='/fermentation') 
@@ -189,3 +189,4 @@ def delete_fermentation_stage(process_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({"success": False, "message": f"Error al eliminar la etapa de fermentación: {str(e)}"}), 500
+    
