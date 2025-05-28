@@ -45,7 +45,7 @@ On Windows, Linux, and macOS:
 
 🧩 **Class Diagram**
 
-![Class Diagram]("C:\Users\roman\Downloads\Winery_Diagram.jpg")
+![Class Diagram]("https://github.com/Santipuebla/winery_management/blob/features/backend/variety_management/Winery_Diagram.jpg?raw=true")
 
 🧑‍💻 **Team Members and Contributions**
 
@@ -55,11 +55,18 @@ _Romano Santiago and Puebla Santiago, developers of BACKEND, which includes rout
 
 🛠️ **Technologies and Tools Used**
 
-_Flask_ 🔥
-_MySQL_ 🐬
-_MySQL Workbench_ 🧰
-_Git & GitHub_ 🔧
-_HTML_ 🌐
-_CSS_ 🎨
-_Jinja2_ ⛩️
-_Bootstrap_ 💻
+▫️_Flask_ 🔥
+
+▫️ _MySQL_ 🐬
+
+▫️ _MySQL Workbench_ 🧰
+
+▫️ _Git & GitHub_ 🔧
+
+▫️ _HTML_ 🌐
+
+▫️ _CSS_ 🎨
+
+▫️ _Jinja2_ ⛩️
+
+▫️ _Bootstrap_ 💻
