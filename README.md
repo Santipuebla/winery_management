@@ -45,7 +45,7 @@ On Windows, Linux, and macOS:
 
 🧩 **Class Diagram**
 
-![Class Diagram]("https://github.com/Santipuebla/winery_management/blob/features/backend/variety_management/Winery_Diagram.jpg?raw=true")
+![Class Diagram]("Winery_Diagram.jpg")
 
 🧑‍💻 **Team Members and Contributions**
 
