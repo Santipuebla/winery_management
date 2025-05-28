@@ -1,0 +1,17 @@
+{% extends 'index.html' %}
+{% block content %}
+  <h2>Grape Varieties</h2>
+  <div class="row">
+    {% for variety in varieties %}
+      <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow">
+          <img src="{{ url_for('static', filename='uploads/' ~ variety.grape_image) }}" class="card-img-top">
+          <div class="card-body">
+            <h5 class="card-title">{{ variety.grape_name }}</h5>
+            <p class="card-text">Origen: {{ variety.grape_origin }}</p>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}
