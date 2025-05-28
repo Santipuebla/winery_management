@@ -43,9 +43,10 @@ On Windows, Linux, and macOS:
 
 `python3 -m venv <nombre_del_entorno` 
 
-🧩 **Class Diagram**
+📜 **Class Diagram**
 
-![Class Diagram]("Winery_Diagram.jpg")
+![Class Diagram](DiagramWinery.jpg)
+
 
 🧑‍💻 **Team Members and Contributions**
 
