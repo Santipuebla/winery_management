@@ -1,0 +1,23 @@
+[
+  {
+    "id": "230e82ef-9cb4-42d0-922f-d1185ea90453",
+    "grape_name": "Malbec",
+    "grape_origin": "Argentina",
+    "grape_image": "https://example.com/malbec.jpg",
+    "status": true
+  },
+  {
+    "id": "24afad5a-4f29-4e08-8892-26a794283b2b",
+    "grape_name": "Cabernet Franc",
+    "grape_origin": "Francia",
+    "grape_image": "https://example.com/cabernet_franc.jpg",
+    "status": true
+  },
+  {
+    "id": "c4a24525-99e2-4150-9b24-d0887fd93b4e",
+    "grape_name": "Chardonnay",
+    "grape_origin": "Francia",
+    "grape_image": "https://example.com/chardonnay.jpg",
+    "status": true
+  }
+]

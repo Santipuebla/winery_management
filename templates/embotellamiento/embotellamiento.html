@@ -1,71 +1,71 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+
+
 
 {% block content %}
-<div class="row">
-  <!-- Formulario -->
-  <div class="col-md-5">
-    <h2>New Bottling Entry</h2>
-    <form method="POST" action="{{ url_for('embotellamiento.embotellamiento_page') }}">
-      <div class="mb-3">
-        <label for="bottling_date" class="form-label">Bottling Date</label>
-        <input type="date" class="form-control" id="bottling_date" name="bottling_date" required>
-      </div>
-      <div class="mb-3">
-        <label for="bottles_quantity" class="form-label">Bottles Quantity</label>
-        <input type="number" class="form-control" id="bottles_quantity" name="bottles_quantity" required>
-      </div>
-      <div class="mb-3">
-        <label for="bottles_format" class="form-label">Bottles Format</label>
-        <input type="text" class="form-control" id="bottles_format" name="bottles_format" required>
-      </div>
-      <div class="mb-3">
-        <label for="bottling_lot_number" class="form-label">Bottling Lot Number</label>
-        <input type="text" class="form-control" id="bottling_lot_number" name="bottling_lot_number" required>
-      </div>
-      <div class="mb-3">
-        <label for="observations" class="form-label">Observations</label>
-        <textarea class="form-control" id="observations" name="observations" rows="3" required></textarea>
-      </div>
-      <button type="submit" class="btn btn-primary">Add Bottling</button>
-    </form>
-  </div>
 
-  <!-- Lista de embotellamientos -->
-  <div class="col-md-7">
-    <h2>Current Bottlings</h2>
-    <table class="table table-striped">
-  <thead>
-    <tr>
-      <th>Date</th>
-      <th>Quantity</th>
-      <th>Format</th>
-      <th>Lot Number</th>
-      <th>Observations</th>
-      <th>Actions</th>  <!-- Nueva columna -->
-    </tr>
-  </thead>
-  <tbody>
-    {% for emb in embotellamientos %}
-    <tr>
-      <td>{{ emb.bottling_date.strftime('%Y-%m-%d') }}</td>
-      <td>{{ emb.bottles_quantity }}</td>
-      <td>{{ emb.bottles_format }}</td>
-      <td>{{ emb.bottling_lot_number }}</td>
-      <td>{{ emb.observations }}</td>
-      <td>
-        <a href="{{ url_for('embotellamiento.edit_embotellamiento', emb_id=emb.id) }}" class="btn btn-sm btn-warning">Editar</a>
-        <form action="{{ url_for('embotellamiento.delete_embotellamiento', emb_id=emb.id) }}" method="POST" style="display:inline;">
-          <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Seguro que querés eliminar este embotellamiento?');">Eliminar</button>
-        </form>
-      </td>
-    </tr>
-    {% else %}
-    <tr>
-      <td colspan="6" class="text-center">No bottlings found.</td>
-    </tr>
-    {% endfor %}
-  </tbody>
+<h2>Etapas de Embotellado</h2>
+
+<a href="{{ url_for('bottling.add_bottling_stage') }}" class="btn btn-primary mb-3">+ Nueva Etapa</a>
+
+
+
+<table class="table table-striped">
+
+<thead>
+
+ <tr>
+
+ <th>Fecha</th>
+
+ <th>Cantidad</th>
+
+ <th>Formato</th>
+
+ <th>Lote</th>
+
+ <th>Observaciones</th>
+
+ <th>Acciones</th>
+
+ </tr>
+
+ </thead>
+
+ <tbody>
+
+ {% for etapa in embotellamientos %}
+
+ <tr>
+
+ <td>{{ etapa.bottling_date }}</td>
+
+ <td>{{ etapa.bottles_quantity }}</td>
+
+ <td>{{ etapa.bottles_format }}</td>
+
+ <td>{{ etapa.bottling_lot_number }}</td>
+
+ <td>{{ etapa.observations }}</td>
+
+ <td>
+
+ <a href="{{ url_for('bottling.edit_bottling_stage', id=etapa.id) }}" class="btn btn-sm btn-warning">Editar</a>
+
+ <form action="{{ url_for('bottling.delete_bottling_stage', id=etapa.id) }}" method="POST" class="d-inline">
+
+<button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
+
+ </form>
+
+ </td>
+
+</tr>
+
+ {% endfor %}
+
+ </tbody>
+
 </table>
-  </div>
-</div>
+
 {% endblock %}
