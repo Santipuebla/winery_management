@@ -1,16 +1,33 @@
 from flask import Flask
 from config.config import DATABASE_CONNECTION_URI
-from routes.index import index
-from routes.varieties import varieties
-from routes.fermentacion import fermentacion
-from routes.recepcion import recepcion
+from models.db import db
+from routes.fermentation_stage_route import fermentation
+from routes.grape_variety_route import grape_varieties
 
-app = Flask(__name__)
-app.register_blueprint(index)
-app.register_blueprint(varieties)
-app.register_blueprint(fermentacion)
-app.register_blueprint(recepcion)
+
+
+def create_app():
+    app = Flask(__name__)
+    app.secret_key = 'clave_super_secreta'
+    app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_CONNECTION_URI
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+    db.init_app(app)
+
+    # Registro de todos los blueprints
+    app.register_blueprint(fermentation)
+    app.register_blueprint(grape_varieties)
+
+
+
+
+    @app.route('/')
+    def index():
+        return "Winery App corriendo 🍇"
+
+    return app
 
 if __name__ == '__main__':
-    print("Estoy ejecutando")
+    app = create_app()
     app.run(debug=True)
+
