@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-from flask import Flask   #importamos flask
-from config.config import DATABASE_CONNECTION_URI #importamos la variable de conexion a la bd
-from models.db import db #importamos db que nos va a permitir definir los modelos, tablas, etc.
-=======
 from flask import Flask
 from config.config import DATABASE_CONNECTION_URI
 from models.db import db #importamos db que nos va a permitir definir los modelos, tablas, etc.
@@ -28,12 +23,9 @@ with app.app_context():
     from models.fermentation_stage import FermentationStage
     from models.bottling_stage import BottlingStage
     from models.aging_stage import AgingStage
-    db.drop_all()
     db.create_all()
 
 
 if __name__ == '__main__':
     print("Estoy ejecutando")
     app.run(debug=True)
->>>>>>> f7f9ac654a0c33e1f41697b3396ec01f70a2b1aa
-
