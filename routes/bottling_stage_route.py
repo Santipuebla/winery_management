@@ -77,6 +77,3 @@ def delete_bottling_stage(id):
 
     flash("Etapa de embotellado eliminada del sistema.", "success")
     return redirect(url_for("bottling.get_bottling_stages"))
-
-
-

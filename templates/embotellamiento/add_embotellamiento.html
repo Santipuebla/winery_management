@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Agregar Nueva Etapa de Embotellado</h2>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4>Detalles de la Etapa</h4>
+        </div>
+        <div class="card-body">
+            <form method="POST" action="{{ url_for('bottling.add_bottling_stage') }}">
+                {# REMOVIDO: {{ form.csrf_token }} ya que no se usa Flask-WTF para el formulario #}
+
+                <div class="mb-3">
+                    <label for="bottling_date" class="form-label">Fecha de Embotellado</label>
+                    {# Usamos data.get() para precargar el valor si hubo errores en el POST #}
+                    <input type="date" class="form-control" id="bottling_date" name="bottling_date" 
+                           value="{{ data.get('bottling_date', '') }}" required>
+                    {# Mostramos los errores manualmente si existen en el diccionario 'errors' #}
+                    {% if errors.get('bottling_date') %}
+                        <div class="text-danger">
+                            {{ errors.get('bottling_date') }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label for="bottles_quantity" class="form-label">Cantidad de Botellas</label>
+                    <input type="number" class="form-control" id="bottles_quantity" name="bottles_quantity" 
+                           value="{{ data.get('bottles_quantity', '') }}" required>
+                    {% if errors.get('bottles_quantity') %}
+                        <div class="text-danger">
+                            {{ errors.get('bottles_quantity') }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label for="bottles_format" class="form-label">Formato de Botellas</label>
+                    <input type="text" class="form-control" id="bottles_format" name="bottles_format" 
+                           value="{{ data.get('bottles_format', '') }}" required>
+                    {% if errors.get('bottles_format') %}
+                        <div class="text-danger">
+                            {{ errors.get('bottles_format') }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label for="bottling_lot_number" class="form-label">Número de Lote de Embotellado</label>
+                    <input type="text" class="form-control" id="bottling_lot_number" name="bottling_lot_number" 
+                           value="{{ data.get('bottling_lot_number', '') }}" required>
+                    {% if errors.get('bottling_lot_number') %}
+                        <div class="text-danger">
+                            {{ errors.get('bottling_lot_number') }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label for="observations" class="form-label">Observaciones</label>
+                    <textarea class="form-control" id="observations" name="observations" rows="3">{{ data.get('observations', '') }}</textarea>
+                    {% if errors.get('observations') %}
+                        <div class="text-danger">
+                            {{ errors.get('observations') }}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Proceso de Vinificación</label>
+                    <p class="form-control-plaintext">Embotellado</p>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Agregar Embotellado</button>
+                <a href="{{ url_for('bottling.embotellamiento_page') }}" class="btn btn-secondary">Cancelar</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

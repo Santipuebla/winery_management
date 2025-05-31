@@ -1,10 +1,13 @@
 from models.db import db
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, render_template
 from models.grape_variety import GrapeVariety 
 from models.vinification_process import VinificationProcess
+from models.fermentation_stage import FermentationStage
+
 import datetime
 
-fermentation = Blueprint('fermentation', __name__, url_prefix='/fermentation') 
+fermentation = Blueprint('fermentation', __name__, url_prefix='/fermentation')
+
 
 UPLOAD_FOLDER = 'static/images' 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
@@ -12,9 +15,16 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+@fermentation.route('/get_all_fermetations', methods=['GET'])
+def get_all_fermetations():
+    processes = FermentationStage.query.all()
+    context = {"fermentations": processes}
+    return render_template("fermentation/fermentacion.html", **context)
+
+
 @fermentation.route('/<uuid:process_id>/fermentation_stage', methods=['GET'])
 def get_fermentation_stage(process_id):
-    vinification_process = VinificationProcess.query.get(str(process_id))
+    vinification_process = FermentationStage.query.get(str(process_id))
     if not vinification_process:
         return jsonify({"success": False, "message": "Proceso de Vinificación no encontrado."}), 404
 
@@ -26,7 +36,7 @@ def get_fermentation_stage(process_id):
 
 @fermentation.route('/<uuid:process_id>/fermentation_stage', methods=['POST'])
 def create_fermentation_stage(process_id):
-    vinification_process = VinificationProcess.query.get(str(process_id))
+    vinification_process = FermentationStage.query.get(str(process_id))
     if not vinification_process:
         return jsonify({"success": False, "message": "Proceso de Vinificación no encontrado."}), 404
 
@@ -84,7 +94,7 @@ def create_fermentation_stage(process_id):
         return jsonify({"success": False, "message": "Datos de entrada inválidos.", "errors": errors}), 422
 
     try:
-        new_fermentation_stage = fermentation(
+        new_fermentation_stage = FermentationStage(
             fermentation_start_date=fermentation_start_date,
             fermentation_end_date=fermentation_end_date,
             density=density,
@@ -102,7 +112,7 @@ def create_fermentation_stage(process_id):
 
 @fermentation.route('/<uuid:process_id>/fermentation_stage', methods=['PUT'])
 def update_fermentation_stage(process_id):
-    vinification_process = VinificationProcess.query.get(str(process_id))
+    vinification_process = FermentationStage.query.get(str(process_id))
     if not vinification_process:
         return jsonify({"success": False, "message": "Proceso de Vinificación no encontrado."}), 404
 
@@ -174,7 +184,7 @@ def update_fermentation_stage(process_id):
 
 @fermentation.route('/<uuid:process_id>/fermentation_stage', methods=['DELETE'])
 def delete_fermentation_stage(process_id):
-    vinification_process = VinificationProcess.query.get(str(process_id))
+    vinification_process = FermentationStage.query.get(str(process_id))
     if not vinification_process:
         return jsonify({"success": False, "message": "Proceso de Vinificación no encontrado."}), 404
 

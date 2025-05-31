@@ -12,13 +12,14 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-@grape_varieties.route('/')
+@grape_varieties.route('/get_grape_varieties')
 def get_grape_varieties():
     # Solo obtenemos las variedades con status = True (activas)
-    grape_varieties_list = GrapeVariety.query.filter_by(status=True).all()
-    return render_template('grape_varieties/grape_varieties.html', grape_varieties=grape_varieties_list)
+    grape_varieties_list = GrapeVariety.query.all()
+    context = { "grape_varieties": grape_varieties_list  }
+    return render_template('grape_varieties/grape_varieties.html', **context)
 
-@grape_varieties.route('/new', methods=['POST'])
+@grape_varieties.route('/add_grape_variety', methods=['POST'])
 def add_grape_variety(): 
     # Obtenemos los datos de un formulario HTML
     grape_name = request.form['grape_name']
@@ -92,3 +93,11 @@ def delete_grape_variety(id):
     db.session.commit()
     flash('Variedad eliminada exitosamente!', 'success') # Pasa a ser inactivo. 
     return redirect(url_for('grape_varieties.get_grape_varieties'))
+
+@grape_varieties.route('/add_grape_variety', methods=['GET'])
+def show_add_grape_variety_form():
+    return render_template('grape_varieties/add_grape.html')
+
+@grape_varieties.route('/new', methods=['GET'])
+def get_add_grape_variety():
+    return render_template('grape_varieties/add_grape.html')

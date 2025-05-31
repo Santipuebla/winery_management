@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+
+
+{% block content %}
+
+<h2>Etapas de Embotellado</h2>
+
+<a href="{{ url_for('bottling.add_bottling_stage') }}" class="btn btn-primary mb-3">+ Nueva Etapa</a>
+
+
+
+<table class="table table-striped">
+
+<thead>
+
+ <tr>
+
+ <th>Fecha</th>
+
+ <th>Cantidad</th>
+
+ <th>Formato</th>
+
+ <th>Lote</th>
+
+ <th>Observaciones</th>
+
+ <th>Acciones</th>
+
+ </tr>
+
+ </thead>
+
+ <tbody>
+
+ {% for etapa in embotellamientos %}
+
+ <tr>
+
+ <td>{{ etapa.bottling_date }}</td>
+
+ <td>{{ etapa.bottles_quantity }}</td>
+
+ <td>{{ etapa.bottles_format }}</td>
+
+ <td>{{ etapa.bottling_lot_number }}</td>
+
+ <td>{{ etapa.observations }}</td>
+
+ <td>
+
+ <a href="{{ url_for('bottling.edit_bottling_stage', id=etapa.id) }}" class="btn btn-sm btn-warning">Editar</a>
+
+ <form action="{{ url_for('bottling.delete_bottling_stage', id=etapa.id) }}" method="POST" class="d-inline">
+
+<button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
+
+ </form>
+
+ </td>
+
+</tr>
+
+ {% endfor %}
+
+ </tbody>
+
+</table>
+
+{% endblock %}
