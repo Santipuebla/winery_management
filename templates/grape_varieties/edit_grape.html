@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2>Editar Variedad de Uva</h2>
+
+  <form method="POST" 
+        action="{{ url_for('grape_varieties.edit_grape_variety', id=variety.id) }}" 
+        enctype="multipart/form-data">
+
+    <!-- Nombre -->
+    <div class="mb-3">
+      <label for="grape_name" class="form-label">Nombre de la Uva</label>
+      <input type="text" class="form-control" id="grape_name" name="grape_name"
+             value="{{ variety.grape_name }}" required>
+    </div>
+
+    <!-- Origen -->
+    <div class="mb-3">
+      <label for="grape_origin" class="form-label">Origen</label>
+      <input type="text" class="form-control" id="grape_origin" name="grape_origin"
+             value="{{ variety.grape_origin }}" required>
+    </div>
+
+    <!-- Activa o no -->
+    <div class="form-check mb-3">
+      <input class="form-check-input" type="checkbox" value="1" id="status" name="status"
+             {% if variety.status %}checked{% endif %}>
+      <label class="form-check-label" for="status">Activa</label>
+    </div>
+
+    <!-- Imagen actual y subida de nueva -->
+    <div class="mb-3">
+      <label class="form-label">Imagen actual</label><br>
+      {% if variety.grape_image %}
+        <img src="{{ url_for('static', filename='grape_varieties/' ~ variety.grape_image) }}"
+             alt="Imagen actual" width="200" class="mb-2">
+      {% else %}
+        <p class="text-muted">Sin imagen</p>
+      {% endif %}
+      <label for="image" class="form-label mt-2">Reemplazar Imagen</label>
+      <input class="form-control" type="file" id="image" name="image" accept="image/*">
+    </div>
+
+    <!-- Botones -->
+    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+    <a href="{{ url_for('grape_varieties.get_grape_varieties') }}" class="btn btn-secondary">Cancelar</a>
+
+  </form>
+</div>
+{% endblock %}

@@ -6,7 +6,7 @@ from models.grape_variety import GrapeVariety
 
 grape_varieties = Blueprint('grape_varieties', __name__, url_prefix='/grape_varieties') #
 
-UPLOAD_FOLDER = 'static/images' 
+UPLOAD_FOLDER = 'static/grape_varieties' 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
 def allowed_file(filename):
@@ -15,7 +15,7 @@ def allowed_file(filename):
 @grape_varieties.route('/get_grape_varieties')
 def get_grape_varieties():
     # Solo obtenemos las variedades con status = True (activas)
-    grape_varieties_list = GrapeVariety.query.all()
+    grape_varieties_list = GrapeVariety.query.filter_by(status=True).all()
     context = { "grape_varieties": grape_varieties_list  }
     return render_template('grape_varieties/grape_varieties.html', **context)
 
@@ -24,7 +24,7 @@ def add_grape_variety():
     # Obtenemos los datos de un formulario HTML
     grape_name = request.form['grape_name']
     grape_origin = request.form['grape_origin']
-    status = bool(request.form.get('status', True)) 
+    status = 'status' in request.form 
     image_file = request.files.get('image') # Se espera un campo 'image'
     filename = None
 
@@ -81,7 +81,7 @@ def edit_grape_variety(id): # Renombrada
         return redirect(url_for('grape_varieties.get_grape_varieties'))
 
     # Si es GET, se renderiza un formulario de edición HTML
-    return render_template('grape_varieties/edit_grape_varieties.html', grape_varieties=grape_variety)
+    return render_template('grape_varieties/edit_grape.html', variety=grape_variety)
 
 @grape_varieties.route('/delete/<string:id>', methods=['POST'])
 def delete_grape_variety(id):
