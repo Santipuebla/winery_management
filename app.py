@@ -27,5 +27,5 @@ with app.app_context():
 
 
 if __name__ == '__main__':
-    print("Estoy ejecutando")
+    print("Estoy ejecutando la aplicacion")
     app.run(debug=True)

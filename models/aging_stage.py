@@ -2,7 +2,7 @@ import uuid
 from models.db import db
 
 class AgingStage(db.Model): 
-    _tablename_ = "agingstage"
+    __tablename__ = "agingstage"
 
     id = db.Column(db.String(50), primary_key=True, default=lambda: str(uuid.uuid4()))
     aging_start_date = db.Column(db.Date, nullable=False)

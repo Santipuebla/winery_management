@@ -2,7 +2,7 @@ import uuid
 from models.db import db
 
 class ReceptionStage(db.Model):
-    _tablename_ = "receptionstage"
+    __tablename__ = "receptionstage"
 
     id = db.Column(db.String(50), primary_key=True, default=lambda: str(uuid.uuid4()))
     reception_date = db.Column(db.Date, nullable=False)

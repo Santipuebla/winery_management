@@ -2,7 +2,7 @@ import uuid
 from models.db import db
 
 class BottlingStage(db.Model): 
-    _tablename_ = "bottlingstage"
+    __tablename__ = "bottlingstage"
 
     id = db.Column(db.String(50), primary_key=True, default=lambda: str(uuid.uuid4()))
     bottling_date = db.Column(db.Date, nullable=False)

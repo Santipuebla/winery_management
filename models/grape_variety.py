@@ -2,7 +2,7 @@ import uuid
 from models.db import db 
 
 class GrapeVariety(db.Model):
-    _tablename_ = 'grape_variety' 
+    __tablename__ = 'grape_variety' 
 
     id = db.Column(db.String(36), primary_key=True, unique= True, default=lambda: str(uuid.uuid4())) 
     grape_name = db.Column(db.String(50), unique=True, nullable=False) # el nombre de uva es único
