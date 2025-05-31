@@ -23,7 +23,6 @@ with app.app_context():
     from models.fermentation_stage import FermentationStage
     from models.bottling_stage import BottlingStage
     from models.aging_stage import AgingStage
-    db.drop_all()
     db.create_all()
 
 

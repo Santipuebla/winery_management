@@ -1,34 +1,20 @@
 [
   {
-    "id": "a1b2c3d4-e5f6-7890-1234-000000000001",
-    "start_date_offset_days": 180,
-    "end_date_offset_days": 0,
-    "current_stage": "Embotellado",
-    "description": "Proceso general de embotellado de varios vinos.",
-    "variety_id_ref": "230e82ef-9cb4-42d0-922f-d1185ea90453"
+    "start_date": "2024-03-01",
+    "current_stage": "Bottling",
+    "description": "Vinificación de Malbec",
+    "grape_variety_name": "Malbec"
   },
   {
-    "id": "a1b2c3d4-e5f6-7890-1234-000000000002",
-    "start_date_offset_days": 400,
-    "end_date_offset_days": 150,
-    "current_stage": "Guarda",
-    "description": "Vinificación de Malbec Cosecha 2023, en barricas.",
-    "variety_id_ref": "230e82ef-9cb4-42d0-922f-d1185ea90453"
+    "start_date": "2024-03-10",
+    "current_stage": "Aging",
+    "description": "Vinificación de Cabernet",
+    "grape_variety_name": "Cabernet Sauvignon"
   },
   {
-    "id": "a1b2c3d4-e5f6-7890-1234-000000000003",
-    "start_date_offset_days": 250,
-    "end_date_offset_days": 80,
-    "current_stage": "Embotellado",
-    "description": "Vinificación de Cabernet Franc 2024, listo para embotellar.",
-    "variety_id_ref": "24afad5a-4f29-4e08-8892-26a794283b2b"
-  },
-  {
-    "id": "a1b2c3d4-e5f6-7890-1234-000000000004",
-    "start_date_offset_days": 200,
-    "end_date_offset_days": 30,
-    "current_stage": "Embotellado",
-    "description": "Vinificación de Chardonnay Cosecha 2024, para vino joven.",
-    "variety_id_ref": "c4a24525-99e2-4150-9b24-d0887fd93b4e"
+    "start_date": "2024-03-15",
+    "current_stage": "Fermentation",
+    "description": "Vinificación de Syrah",
+    "grape_variety_name": "Syrah"
   }
 ]

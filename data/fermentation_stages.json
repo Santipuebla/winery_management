@@ -1,32 +1,29 @@
 [
   {
-    "id": "e1f2a3b4-c5d6-7890-1234-000000000001",
-    "fermentation_start_date_offset_days": 380,
-    "fermentation_end_date_offset_days": 350,
-    "density": 1.090,
-    "total_acidity": 6.5,
+    "fermentation_start_date": "2024-03-02",
+    "fermentation_end_date": "2024-03-10",
+    "density": 1.01,
+    "total_acidity": 5.4,
+    "temperature_celsius": 24.0,
+    "observations": "Fermentación estable",
+    "grape_variety_name": "Malbec"
+  },
+  {
+    "fermentation_start_date": "2024-03-11",
+    "fermentation_end_date": "2024-03-18",
+    "density": 1.02,
+    "total_acidity": 5.1,
+    "temperature_celsius": 23.0,
+    "observations": "Sin complicaciones",
+    "grape_variety_name": "Cabernet Sauvignon"
+  },
+  {
+    "fermentation_start_date": "2024-03-16",
+    "fermentation_end_date": "2024-03-22",
+    "density": 1.00,
+    "total_acidity": 5.6,
     "temperature_celsius": 25.0,
-    "observations": "Fermentación controlada de Malbec. Remontajes diarios.",
-    "vinification_process_id_ref": "a1b2c3d4-e5f6-7890-1234-000000000002"
-  },
-  {
-    "id": "e1f2a3b4-c5d6-7890-1234-000000000002",
-    "fermentation_start_date_offset_days": 230,
-    "fermentation_end_date_offset_days": 200,
-    "density": 1.080,
-    "total_acidity": 6.8,
-    "temperature_celsius": 22.0,
-    "observations": "Fermentación de Cabernet Franc con levadura seleccionada.",
-    "vinification_process_id_ref": "a1b2c3d4-e5f6-7890-1234-000000000003"
-  },
-  {
-    "id": "e1f2a3b4-c5d6-7890-1234-000000000003",
-    "fermentation_start_date_offset_days": 190,
-    "fermentation_end_date_offset_days": 170,
-    "density": 1.070,
-    "total_acidity": 7.0,
-    "temperature_celsius": 18.0,
-    "observations": "Fermentación de Chardonnay en tanques de acero inoxidable.",
-    "vinification_process_id_ref": "a1b2c3d4-e5f6-7890-1234-000000000004"
+    "observations": "Aumento de temperatura controlado",
+    "grape_variety_name": "Syrah"
   }
 ]

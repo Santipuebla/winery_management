@@ -1,30 +1,26 @@
 [
   {
-    "id": "b1c2d3e4-f5a6-7890-1234-000000000001",
-    "bottling_date_offset_days": 10,
-    "bottles_quantity": 1500,
+    "bottling_date": "2024-05-11",
+    "bottles_quantity": 700,
     "bottles_format": "750ml",
-    "bottling_lot_number": "LOTE-EMB-GEN-001",
-    "observations": "Primera fase de embotellado del proceso general.",
-    "vinification_process_id_ref": "a1b2c3d4-e5f6-7890-1234-000000000001"
+    "bottling_lot_number": "MB20240511",
+    "observations": "Botellas limpias, sin fallas",
+    "grape_variety_name": "Malbec"
   },
   {
-    "id": "b1c2d3e4-f5a6-7890-1234-000000000002",
-    "bottling_date_offset_days": 5,
-    "bottles_quantity": 750,
-    "bottles_format": "1500ml (Magnum)",
-    "bottling_lot_number": "LOTE-MAG-CF-2024",
-    "observations": "Embotellado de botellas Magnum de Cabernet Franc 2024.",
-    "vinification_process_id_ref": "a1b2c3d4-e5f6-7890-1234-000000000003"
+    "bottling_date": "2024-05-16",
+    "bottles_quantity": 600,
+    "bottles_format": "750ml",
+    "bottling_lot_number": "CB20240516",
+    "observations": "Ligeras burbujas",
+    "grape_variety_name": "Cabernet Sauvignon"
   },
   {
-    "id": "b1c2d3e4-f5a6-7890-1234-000000000003",
-    "bottling_date_offset_days": 2,
-    "bottles_quantity": 2000,
+    "bottling_date": "2024-05-30",
+    "bottles_quantity": 550,
     "bottles_format": "750ml",
-    "bottling_lot_number": "LOTE-EMB-CHARD-2024",
-    "observations": "Embotellado de Chardonnay 2024.",
-    "vinification_process_id_ref": "a1b2c3d4-e5f6-7890-1234-000000000004"
+    "bottling_lot_number": "SY20240530",
+    "observations": "Correcto llenado",
+    "grape_variety_name": "Syrah"
   }
 ]
-
