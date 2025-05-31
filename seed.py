@@ -1,315 +1,68 @@
-import os
-import json
-from datetime import datetime, timedelta
-import sys
 import uuid
-
-# Asegúrate de que tu instancia de Flask 'app' esté disponible.
-try:
-    from app import app 
-except ImportError:
-    print("Error: No se pudo importar 'app' desde 'app.py'.")
-    print("Asegúrate de que 'app.py' esté en la misma carpeta que 'seed.py' o ajusta la ruta de importación.")
-    sys.exit(1)
-
-# Tu instancia de SQLAlchemy
-try:
-    from models.db import db 
-except ImportError:
-    print("Error: No se pudo importar 'db' desde 'models.db'.")
-    print("Asegúrate de que 'models/db.py' exista y 'db' esté definido allí.")
-    sys.exit(1)
-
-# ====================================================================
-# IMPORTA TODOS TUS MODELOS DE LA CARPETA 'models/'
-# Asegúrate de que los nombres de clase coincidan con tus archivos y tu esquema de base de datos.
-# ====================================================================
-try:
-    from models.grape_variety import GrapeVariety # Nuevo
-    from models.vinification_process import VinificationProcess
-    from models.reception_stage import ReceptionStage
-    from models.fermentation_stage import FermentationStage
-    from models.aging_stage import AgingStage
-    from models.bottling_stage import BottlingStage
-except ImportError as e:
-    print(f"Error al importar un modelo: {e}")
-    print("Asegúrate de que todos tus archivos de modelo existan en la carpeta 'models/' y los nombres de las clases sean correctos.")
-    sys.exit(1)
-
-
-# Directorio donde se encuentran los archivos JSON de datos
-DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')
-
-
-def load_json_data(filename):
-    """Carga datos de un archivo JSON específico."""
-    filepath = os.path.join(DATA_DIR, filename)
-    try:
-        with open(filepath, 'r', encoding='utf-8') as f:
-            return json.load(f)
-    except FileNotFoundError:
-        print(f"Error: El archivo '{filepath}' no se encontró.")
-        return []
-    except json.JSONDecodeError:
-        print(f"Error: El archivo '{filepath}' no es un JSON válido.")
-        return []
-
-
-def populate_grape_varieties(data):
-    """Popula la tabla GrapeVariety y retorna un mapa de IDs."""
-    created = 0
-    grape_varieties_map = {}
-    print("\n--- Populando GrapeVariety ---")
-    for item in data:
-        variety = GrapeVariety(
-            grape_name=item['grape_name'],
-            grape_origin=item['grape_origin'],
-            grape_image=item.get('grape_image'),
-            status=item.get('status', True)
-        )
-        # Asignar el ID del JSON después de la creación del objeto
-        variety.id = uuid.UUID(item['id'])
-        
-        db.session.add(variety)
-        grape_varieties_map[str(variety.id)] = variety
-        print(f"  - Creada GrapeVariety: {item['grape_name']} (ID: {variety.id})")
-        created += 1
-    return created, grape_varieties_map
-
-
-def populate_vinification_processes(data, grape_varieties_map):
-    """Popula la tabla VinificationProcess y retorna un mapa de IDs."""
-    created = 0
-    vinification_processes_map = {} 
-    print("\n--- Populando VinificationProcess ---")
-    for item in data:
-        start_date = datetime.now() - timedelta(days=item['start_date_offset_days'])
-        end_date = datetime.now() - timedelta(days=item['end_date_offset_days'])
-        
-        variety_id = item.get('variety_id_ref') # Usar 'variety_id_ref' para el JSON
-        if variety_id not in grape_varieties_map:
-            print(f"  - Advertencia: GrapeVariety con ID '{variety_id}' no encontrado para VinificationProcess '{item['id']}'. Saltando.")
-            continue
-
-        process = VinificationProcess(
-            start_date=start_date,
-            end_date=end_date,
-            current_stage=item['current_stage'], # Cambiado a 'current_stage'
-            description=item.get('description'), # Añadido 'description'
-            variety_id=variety_id
-        )
-        process.id = uuid.UUID(item['id']) 
-
-        db.session.add(process)
-        vinification_processes_map[str(process.id)] = process 
-        print(f"  - Creado VinificationProcess: {item['current_stage']} (ID: {process.id})")
-        created += 1
-    return created, vinification_processes_map
-
-def populate_reception_stages(data, vinification_processes_map):
-    """Popula la tabla ReceptionStage."""
-    created = 0
-    print("\n--- Populando ReceptionStage ---")
-    for item in data:
-        reception_date = datetime.now() - timedelta(days=item['reception_date_offset_days'])
-        
-        process_id = item.get('vinification_process_id_ref')
-        if process_id not in vinification_processes_map:
-            print(f"  - Advertencia: VinificationProcess con ID '{process_id}' no encontrado para ReceptionStage '{item['id']}'. Saltando.")
-            continue
-
-        stage = ReceptionStage(
-            reception_date=reception_date,
-            weight_kg=item['weight_kg'], # Cambiado
-            brix_degrees=item['brix_degrees'], # Nuevo
-            ph_value=item['ph_value'], # Nuevo
-            temperature_celcius=item['temperature_celcius'], # Nuevo
-            observations=item.get('observations'),
-            vinification_process_id=process_id 
-        )
-        stage.id = uuid.UUID(item['id'])
-
-        db.session.add(stage)
-        print(f"  - Creada ReceptionStage (ID: {stage.id}) para {vinification_processes_map[process_id].current_stage}")
-        created += 1
-    return created
-
-def populate_fermentation_stages(data, vinification_processes_map):
-    """Popula la tabla FermentationStage."""
-    created = 0
-    print("\n--- Populando FermentationStage ---")
-    for item in data:
-        fermentation_start_date = datetime.now() - timedelta(days=item['fermentation_start_date_offset_days']) # Cambiado
-        fermentation_end_date = datetime.now() - timedelta(days=item['fermentation_end_date_offset_days']) # Cambiado
-        
-        process_id = item.get('vinification_process_id_ref')
-        if process_id not in vinification_processes_map:
-            print(f"  - Advertencia: VinificationProcess con ID '{process_id}' no encontrado para FermentationStage '{item['id']}'. Saltando.")
-            continue
-
-        stage = FermentationStage(
-            fermentation_start_date=fermentation_start_date,
-            fermentation_end_date=fermentation_end_date,
-            density=item['density'], # Nuevo
-            total_acidity=item['total_acidity'], # Nuevo
-            temperature_celsius=item['temperature_celsius'],
-            observations=item.get('observations'),
-            vinification_process_id=process_id
-        )
-        stage.id = uuid.UUID(item['id'])
-
-        db.session.add(stage)
-        print(f"  - Creada FermentationStage (ID: {stage.id}) para {vinification_processes_map[process_id].current_stage}")
-        created += 1
-    return created
-
-def populate_aging_stages(data, vinification_processes_map):
-    """Popula la tabla AgingStage."""
-    created = 0
-    print("\n--- Populando AgingStage ---")
-    for item in data:
-        aging_start_date = datetime.now() - timedelta(days=item['aging_start_date_offset_days']) # Cambiado
-        aging_end_date = datetime.now() - timedelta(days=item['aging_end_date_offset_days']) # Cambiado
-        
-        process_id = item.get('vinification_process_id_ref')
-        if process_id not in vinification_processes_map:
-            print(f"  - Advertencia: VinificationProcess con ID '{process_id}' no encontrado para AgingStage '{item['id']}'. Saltando.")
-            continue
-
-        stage = AgingStage(
-            aging_start_date=aging_start_date,
-            aging_end_date=aging_end_date,
-            vessel_type=item['vessel_type'], # Cambiado
-            volume_liters=item['volume_liters'], # Nuevo
-            vessel_identifier=item['vessel_identifier'], # Nuevo
-            location=item['location'], # Nuevo
-            observations=item.get('observations'),
-            vinification_process_id=process_id
-        )
-        stage.id = uuid.UUID(item['id'])
-
-        db.session.add(stage)
-        print(f"  - Creada AgingStage (ID: {stage.id}) para {vinification_processes_map[process_id].current_stage}")
-        created += 1
-    return created
-
-def populate_bottling_stages(data, vinification_processes_map):
-    """Popula la tabla BottlingStage."""
-    created = 0
-    print("\n--- Populando BottlingStage ---")
-    for item in data:
-        bottling_date = datetime.now() - timedelta(days=item['bottling_date_offset_days'])
-        
-        process_id = item.get('vinification_process_id_ref')
-        if process_id not in vinification_processes_map:
-            print(f"  - Advertencia: VinificationProcess con ID '{process_id}' no encontrado para BottlingStage '{item['id']}'. Saltando.")
-            continue
-
-        stage = BottlingStage(
-            bottling_date=bottling_date,
-            bottles_quantity=item['bottles_quantity'],
-            bottles_format=item['bottles_format'],
-            bottling_lot_number=item['bottling_lot_number'],
-            observations=item.get('observations'),
-            vinification_process_id=process_id
-        )
-        stage.id = uuid.UUID(item['id'])
-
-        db.session.add(stage)
-        print(f"  - Creada BottlingStage (ID: {stage.id}) para {vinification_processes_map[process_id].current_stage}")
-        created += 1
-    return created
-
+from app import app
+from models.db import db
+from models.grape_variety import GrapeVariety
+from models.vinification_process import VinificationProcess
+from models.reception_stage import ReceptionStage
+from models.fermentation_stage import FermentationStage
+from models.bottling_stage import BottlingStage
+from models.aging_stage import AgingStage
 
 def populate_all():
     with app.app_context():
-        print("Iniciando el proceso de seeding de la base de datos...")
+        print("Reiniciando tablas...")
+        db.drop_all()
+        db.create_all()
 
-        # --- Eliminar datos existentes (Orden inverso a la creación por FKs) ---
-        print("\n--- Limpiando datos existentes (tablas hijo a padre) ---")
-        try:
-            db.session.query(BottlingStage).delete()
-            db.session.query(AgingStage).delete()
-            db.session.query(FermentationStage).delete()
-            db.session.query(ReceptionStage).delete()
-            db.session.query(VinificationProcess).delete() 
-            db.session.query(GrapeVariety).delete() # Nuevo: Eliminar GrapeVariety primero
-            db.session.commit()
-            print("Datos existentes limpiados.")
-        except Exception as e:
-            db.session.rollback()
-            print(f"Advertencia: Error al limpiar datos existentes: {e}")
-            print("Continuando de todas formas. Podría haber conflictos de datos.")
+        # ---------- GRAPE VARIETIES ----------
+        print(" Cargando variedades de uva...")
+        v1 = GrapeVariety(id="aa7ac020-7dd8-4b43-acd0-b6312b62ef78", grape_name="Variedad 1", grape_origin="Origen 1", grape_image="imagen1.jpg", status=True)
+        v2 = GrapeVariety(id="b465a22b-29f2-4a42-b0f9-4e12da14be2c", grape_name="Variedad 2", grape_origin="Origen 2", grape_image="imagen2.jpg", status=True)
+        v3 = GrapeVariety(id="5c7f680b-c04a-4b8e-b6b8-61bb34943fc5", grape_name="Variedad 3", grape_origin="Origen 3", grape_image="imagen3.jpg", status=True)
+        db.session.add_all([v1, v2, v3])
 
-        # --- Cargar datos de los archivos JSON ---
-        print("\n--- Cargando datos desde archivos JSON ---")
-        grape_varieties_data = load_json_data('grape_variety.json') # Nuevo
-        vinification_processes_data = load_json_data('vinification_processes.json')
-        reception_stages_data = load_json_data('reception_stages.json')
-        fermentation_stages_data = load_json_data('fermentation_stages.json')
-        aging_stages_data = load_json_data('aging_stages.json')
-        bottling_stages_data = load_json_data('bottling_stages.json')
+        # ---------- VINIFICATION PROCESSES ----------
+        print(" Cargando procesos de vinificación...")
+        p1 = VinificationProcess(id="0591318f-2628-4aaf-ba42-5b50a860885b", start_date="2024-04-01", end_date="2024-06-01", current_stage="aging", description="Proceso completo de prueba 1", grape_variety_id=v1.id)
+        p2 = VinificationProcess(id="59a2a1d9-3431-4600-95fe-e796f29c045d", start_date="2024-04-02", end_date="2024-06-02", current_stage="aging", description="Proceso completo de prueba 2", grape_variety_id=v2.id)
+        p3 = VinificationProcess(id="8bbd432c-e2da-4c8b-88c7-d0f111703bc6", start_date="2024-04-03", end_date="2024-06-03", current_stage="aging", description="Proceso completo de prueba 3", grape_variety_id=v3.id)
+        db.session.add_all([p1, p2, p3])
 
-        # --- Población de tablas en el ORDEN CORRECTO (padre a hijo) ---
-        total_created = 0
+        # ---------- RECEPTION STAGE ----------
+        print(" Cargando recepciones...")
+        db.session.add_all([
+            ReceptionStage(id="b67faa08-ac5c-48e6-a907-ed0a2e5652f0", reception_date="2024-04-01", weight_kg=1100, brix_degrees=22.0, ph_value=3.2, temperature_celcius=17.5, observations="Recepción 1", vinification_process_id=p1.id),
+            ReceptionStage(id="bbb63371-0497-4567-a8ac-5ffe95944199", reception_date="2024-04-02", weight_kg=1150, brix_degrees=23.0, ph_value=3.3, temperature_celcius=18.5, observations="Recepción 2", vinification_process_id=p2.id),
+            ReceptionStage(id="b37556f0-c5d0-4dba-a93b-e203b9e20da7", reception_date="2024-04-03", weight_kg=1200, brix_degrees=24.0, ph_value=3.4, temperature_celcius=19.5, observations="Recepción 3", vinification_process_id=p3.id),
+        ])
 
-        # 0. GrapeVariety (Ahora es el padre principal)
-        count, grape_varieties_map = populate_grape_varieties(grape_varieties_data)
-        total_created += count
+        # ---------- FERMENTATION STAGE ----------
+        print("🧪 Cargando fermentaciones...")
+        db.session.add_all([
+            FermentationStage(id="80f521b3-c6dd-4752-a82f-dfda5f84eefd", fermentation_start_date="2024-04-02", fermentation_end_date="2024-04-11", density=1.01, total_acidity=6.0, temperature_celsius=21.0, observations="Fermentación 1", vinification_process_id=p1.id),
+            FermentationStage(id="beed5738-3cfd-47a9-882a-28f20d98acf9", fermentation_start_date="2024-04-03", fermentation_end_date="2024-04-12", density=1.02, total_acidity=6.2, temperature_celsius=22.0, observations="Fermentación 2", vinification_process_id=p2.id),
+            FermentationStage(id="5c18c8b4-4511-4283-9e07-9a26302ae81e", fermentation_start_date="2024-04-04", fermentation_end_date="2024-04-13", density=1.03, total_acidity=6.4, temperature_celsius=23.0, observations="Fermentación 3", vinification_process_id=p3.id),
+        ])
+
+        # ---------- BOTTLING STAGE ----------
+        print("🍾 Cargando embotellados...")
+        db.session.add_all([
+            BottlingStage(id="b4b92ff1-484b-4b16-816f-8b527da5aaf8", bottling_date="2024-05-11", bottles_quantity=900, bottles_format="750ml", bottling_lot_number="LoteB1", observations="Embotellado 1", vinification_process_id=p1.id),
+            BottlingStage(id="3b459560-53a1-4ea2-8268-8dbd0d3f5571", bottling_date="2024-05-12", bottles_quantity=950, bottles_format="750ml", bottling_lot_number="LoteB2", observations="Embotellado 2", vinification_process_id=p2.id),
+            BottlingStage(id="820a106d-df68-455c-9da0-87f9c03d5782", bottling_date="2024-05-13", bottles_quantity=1000, bottles_format="750ml", bottling_lot_number="LoteB3", observations="Embotellado 3", vinification_process_id=p3.id),
+        ])
+
+        # ---------- AGING STAGE ----------
+        print(" Cargando crianza...")
+        db.session.add_all([
+            AgingStage(id="8475e1b6-d942-4361-94c4-6c98746a6e17", aging_start_date="2024-05-11", aging_end_date="2024-06-01", vessel_type="Barrica 1", volume_liters=200.0, vessel_identifier="AG-001", location="Sala 1", observations="Notas 1", vinification_process_id=p1.id),
+            AgingStage(id="45471353-ca31-4a02-b5d5-9cb956d06e26", aging_start_date="2024-05-12", aging_end_date="2024-06-02", vessel_type="Barrica 2", volume_liters=225.0, vessel_identifier="AG-002", location="Sala 2", observations="Notas 2", vinification_process_id=p2.id),
+            AgingStage(id="c58c21d0-220e-4453-9e1c-f5bb3f4e825e", aging_start_date="2024-05-13", aging_end_date="2024-06-03", vessel_type="Barrica 3", volume_liters=250.0, vessel_identifier="AG-003", location="Sala 3", observations="Notas 3", vinification_process_id=p3.id),
+        ])
+
+        # ---------- COMMIT ----------
         db.session.commit()
-        print(f'{count} variedades de uva cargadas y mapeadas.')
-
-        # 1. VinificationProcess (Ahora depende de GrapeVariety)
-        count, vinification_processes_map = populate_vinification_processes(vinification_processes_data, grape_varieties_map)
-        total_created += count
-        db.session.commit()
-        print(f'{count} procesos de vinificación cargados y mapeados.')
-
-        # 2. ReceptionStage
-        count = populate_reception_stages(reception_stages_data, vinification_processes_map)
-        total_created += count
-        db.session.commit()
-        print(f'{count} etapas de recepción cargadas.')
-
-        # 3. FermentationStage
-        count = populate_fermentation_stages(fermentation_stages_data, vinification_processes_map)
-        total_created += count
-        db.session.commit()
-        print(f'{count} etapas de fermentación cargadas.')
-
-        # 4. AgingStage
-        count = populate_aging_stages(aging_stages_data, vinification_processes_map)
-        total_created += count
-        db.session.commit()
-        print(f'{count} etapas de guarda/crianza cargadas.')
-
-        # 5. BottlingStage
-        count = populate_bottling_stages(bottling_stages_data, vinification_processes_map)
-        total_created += count
-        db.session.commit()
-        print(f'{count} etapas de embotellado cargadas.')
-
-        print(f"\n¡Seeding completado con éxito! Total de registros creados: {total_created}")
-        
-        # Imprime el ID del proceso de embotellado general para que lo copies
-        general_bottling_process_id = None
-        for p in vinification_processes_data:
-            if p['current_stage'] == "Embotellado" and p.get('description') == "Proceso general de embotellado de varios vinos.": # Basarse en la nueva data
-                general_bottling_process_id = p['id']
-                break
-        
-        if general_bottling_process_id:
-            print("----------------------------------------------------------------------------------")
-            print(f"Recuerda usar este UUID para FIXED_VINIFICATION_PROCESS_UUID en bottling_routes.py:")
-            print(f"   -> {general_bottling_process_id}")
-            print("----------------------------------------------------------------------------------")
-        else:
-            print("Advertencia: No se encontró 'Proceso Embotellado General' (basado en la descripción) en tus datos de vinification_processes.json.")
-
+        print(" ¡Base de datos inicializada con éxito!")
 
 if __name__ == '__main__':
-    with app.app_context():
-        # Asegura que las tablas de la base de datos existan antes de intentar poblar.
-        db.create_all()
-        print("Tablas de la base de datos aseguradas/creadas.")
     populate_all()
