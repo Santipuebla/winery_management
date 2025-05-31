@@ -1,0 +1,17 @@
+<h1>Variedades de Uva</h1>
+
+<a href="{{ url_for('grape_varieties.get_add_grape_variety') }}">
+    <button>Crear variedad</button>
+</a>
+
+{% for variety in grape_varieties %}
+    <div>
+        <h3>{{ variety.grape_name }}</h3>
+        <p>Origen: {{ variety.grape_origin }}</p>
+        {% if variety.grape_image %}
+            <img src="{{ url_for('static', filename='grape_varieties/' ~ variety.grape_image) }}" width="200">
+        {% else %}
+            <p>Sin imagen</p>
+        {% endif %}
+    </div>
+{% endfor %}

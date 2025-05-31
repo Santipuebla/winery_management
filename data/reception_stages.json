@@ -1,0 +1,32 @@
+[
+  {
+    "id": "c1d2e3f4-a5b6-7890-1234-000000000001",
+    "reception_date_offset_days": 395,
+    "weight_kg": 10000.5,
+    "brix_degrees": 24.5,
+    "ph_value": 3.5,
+    "temperature_celcius": 18.0,
+    "observations": "Uvas Malbec de alta calidad para el proceso 2023.",
+    "vinification_process_id_ref": "a1b2c3d4-e5f6-7890-1234-000000000002"
+  },
+  {
+    "id": "c1d2e3f4-a5b6-7890-1234-000000000002",
+    "reception_date_offset_days": 245,
+    "weight_kg": 7500.0,
+    "brix_degrees": 23.8,
+    "ph_value": 3.6,
+    "temperature_celcius": 19.5,
+    "observations": "Uvas Cabernet Franc para el proceso 2024.",
+    "vinification_process_id_ref": "a1b2c3d4-e5f6-7890-1234-000000000003"
+  },
+  {
+    "id": "c1d2e3f4-a5b6-7890-1234-000000000003",
+    "reception_date_offset_days": 195,
+    "weight_kg": 6000.0,
+    "brix_degrees": 22.0,
+    "ph_value": 3.3,
+    "temperature_celcius": 17.0,
+    "observations": "Uvas Chardonnay para vino blanco.",
+    "vinification_process_id_ref": "a1b2c3d4-e5f6-7890-1234-000000000004"
+  }
+]

@@ -95,12 +95,3 @@ def get_aging_stages():
     return render_template("aging/list.html", stages=stages,
                         current_filter_vessel=filter_vessel,
                         current_filter_location=filter_location)
-
-
-
-
-
-
-
-
-

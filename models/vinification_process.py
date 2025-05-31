@@ -1,8 +1,12 @@
 import uuid
 from models.db import db 
+from models.reception_stage import ReceptionStage
+from models.fermentation_stage import FermentationStage
+from models.bottling_stage import BottlingStage
+from models.aging_stage import AgingStage
 
 class VinificationProcess(db.Model):
-    __tablename__ = 'vinification_process' 
+    _tablename_ = 'vinification_process' 
 
     id = db.Column(db.String(50), primary_key=True,unique=True, default=lambda: str(uuid.uuid4())) # UUIDs son de 36 caracteres con guiones
     start_date = db.Column(db.Date, nullable=False)
@@ -14,13 +18,15 @@ class VinificationProcess(db.Model):
 
     # Las relaciones One-to-One con las etapas (las FKs están en las tablas de las etapas)
     # Usamos uselist=False para indicar que es una relación 1:1 
-    reception_stage = db.relationship('ReceptionStage', backref='vinification_process', uselist=False, lazy=True)
-    fermentation_stage = db.relationship('FermentationStage', backref='vinification_process', uselist=False, lazy=True)
-    bottling_stage = db.relationship('BottlingStage', backref='vinification_process', uselist=False, lazy=True)
-    aging_stage = db.relationship('AgingStage', backref='vinification_process', uselist=False, lazy=True)
+
+    reception_stage = db.relationship('ReceptionStage', back_populates='vinification_process', uselist=False)
+    reception_stage = db.relationship('ReceptionStage', back_populates='vinification_process', uselist=False)
+    fermentation_stage = db.relationship('FermentationStage', back_populates='vinification_process', uselist=False)
+    bottling_stage = db.relationship('BottlingStage', back_populates='vinification_process', uselist=False)
+    aging_stage = db.relationship("AgingStage", back_populates="vinification_process", uselist=False)
 
 
-    def __init__(self, start_date, current_stage, grape_variety_id, end_date=None, description=None):
+    def _init_(self, start_date, current_stage, grape_variety_id, end_date=None, description=None):
         self.start_date = start_date
         self.end_date = end_date
         self.current_stage = current_stage
