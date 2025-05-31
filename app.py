@@ -26,7 +26,6 @@ with app.app_context():
     db.create_all()
 
 
-if __name__ == '__main__':
+if __name__ == '_main_':
     print("Estoy ejecutando")
     app.run(debug=True)
-
