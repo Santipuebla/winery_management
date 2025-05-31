@@ -4,7 +4,7 @@ from models.db import db
 from models.reception_stage import ReceptionStage
 from datetime import datetime
 
-reception = Blueprint("reception", __name__, url_prefix="/reception")
+reception = Blueprint("reception", _name_, url_prefix="/reception")
 
 UPLOAD_FOLDER = "static/images"
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif"}

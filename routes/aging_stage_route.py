@@ -4,9 +4,7 @@ from models.db import db
 from models.aging_stage import AgingStage  
 from datetime import datetime
 
-aging = Blueprint("aging", __name__, url_prefix="/aging")
-
-
+aging = Blueprint("aging", _name_, url_prefix="/aging")
 
 
 @aging.route("/new", methods=["GET", "POST"])
@@ -97,12 +95,3 @@ def get_aging_stages():
     return render_template("aging/list.html", stages=stages,
                         current_filter_vessel=filter_vessel,
                         current_filter_location=filter_location)
-
-
-
-
-
-
-
-
-

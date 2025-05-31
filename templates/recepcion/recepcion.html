@@ -1,2 +1,44 @@
+<<<<<<< HEAD
 <h1>esto va a ser recepcion
 </h1>
+=======
+{% extends 'index.html' %}
+{% block title %}Grape Reception{% endblock %}
+
+{% block content %}
+<h2>Grape Reception</h2>
+<form method="post" action="/recepcion">
+  <div class="mb-3">
+    <label for="reception_date" class="form-label">Date and Time of Receipt</label>
+    <input type="datetime-local" class="form-control" id="reception_date" name="reception_date" required>
+  </div>
+
+  <div class="mb-3">
+    <label for="weight_kg" class="form-label">Weight (kg)</label>
+    <input type="number" class="form-control" id="weight_kg" name="weight_kg" step="0.01" required>
+  </div>
+
+  <div class="mb-3">
+    <label for="brix_degrees" class="form-label">Brix Degrees (°Brix)</label>
+    <input type="number" class="form-control" id="brix_degrees" name="brix_degrees" step="0.1">
+  </div>
+
+  <div class="mb-3">
+    <label for="ph_value" class="form-label">pH Value</label>
+    <input type="number" class="form-control" id="ph_value" name="ph_value" step="0.01">
+  </div>
+
+  <div class="mb-3">
+    <label for="temperature_celsius" class="form-label">Temperature (°C)</label>
+    <input type="number" class="form-control" id="temperature_celsius" name="temperature_celsius" step="0.1">
+  </div>
+
+  <div class="mb-3">
+    <label for="observations" class="form-label">Observations</label>
+    <textarea class="form-control" id="observations" name="observations" rows="3"></textarea>
+  </div>
+
+  <button type="submit" class="btn btn-success">Save Record</button>
+</form>
+{% endblock %}
+>>>>>>> 8cf2f17135847ad7fdbacfd311b2e2e06dde608e
