@@ -6,7 +6,7 @@ from models.fermentation_stage import FermentationStage
 
 import datetime
 
-fermentation = Blueprint('fermentation', _name_, url_prefix='/fermentation')
+fermentation = Blueprint('fermentation', __name__, url_prefix='/fermentation')
 
 
 UPLOAD_FOLDER = 'static/images' 

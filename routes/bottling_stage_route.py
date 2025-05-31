@@ -4,7 +4,7 @@ from models.db import db
 from models.bottling_stage import BottlingStage
 from datetime import datetime
 
-bottling = Blueprint("bottling", _name_, url_prefix="/bottling")
+bottling = Blueprint("bottling", __name__, url_prefix="/bottling")
 
 UPLOAD_FOLDER = "static/images"
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif"}

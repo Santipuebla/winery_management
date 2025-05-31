@@ -4,7 +4,7 @@ from models.vinification_process import VinificationProcess
 from models.grape_variety import GrapeVariety # Importamos GrapeVariety para validar FK
 import datetime # Para manejar directamente el uso de fechas
 
-vinification_process_bp = Blueprint('vinification_process_bp', _name_)
+vinification_process_bp = Blueprint('vinification_process_bp', __name__)
 
 @vinification_process_bp.route('/', methods=['GET'])
 def get_all_vinification_processes():

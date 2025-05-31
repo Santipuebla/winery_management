@@ -4,7 +4,7 @@ from models.db import db
 from models.aging_stage import AgingStage  
 from datetime import datetime
 
-aging = Blueprint("aging", _name_, url_prefix="/aging")
+aging = Blueprint("aging", __name__, url_prefix="/aging")
 
 
 @aging.route("/new", methods=["GET", "POST"])

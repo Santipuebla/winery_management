@@ -4,7 +4,7 @@ from werkzeug.utils import secure_filename
 from models.db import db
 from models.grape_variety import GrapeVariety 
 
-grape_varieties = Blueprint('grape_varieties', _name_, url_prefix='/grape_varieties') #
+grape_varieties = Blueprint('grape_varieties', __name__, url_prefix='/grape_varieties') #
 
 UPLOAD_FOLDER = 'static/images' 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
