@@ -2,7 +2,7 @@ import uuid
 from models.db import db
 
 class AgingStage(db.Model): 
-    _tablename_ = "agingstage"
+    __tablename__ = "agingstage"
 
     id = db.Column(db.String(50), primary_key=True, default=lambda: str(uuid.uuid4()))
     aging_start_date = db.Column(db.Date, nullable=False)
@@ -16,7 +16,7 @@ class AgingStage(db.Model):
     vinification_process = db.relationship("VinificationProcess", back_populates="aging_stage", lazy=True)
 
 
-    def _init_(self, aging_start_date, aging_end_date, vessel_type, volume_liters, vessel_identifier, location, observations):
+    def __init__(self, aging_start_date, aging_end_date, vessel_type, volume_liters, vessel_identifier, location, observations):
         self.aging_start_date = aging_start_date
         self.aging_end_date = aging_end_date
         self.vessel_type = vessel_type

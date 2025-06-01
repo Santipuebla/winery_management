@@ -2,7 +2,7 @@ import uuid
 from models.db import db
 
 class ReceptionStage(db.Model):
-    _tablename_ = "receptionstage"
+    __tablename__ = "receptionstage"
 
     id = db.Column(db.String(50), primary_key=True, default=lambda: str(uuid.uuid4()))
     reception_date = db.Column(db.Date, nullable=False)
@@ -15,7 +15,7 @@ class ReceptionStage(db.Model):
     vinification_process_id = db.Column(db.String(50), db.ForeignKey('vinification_process.id'), nullable=False)
     vinification_process = db.relationship('VinificationProcess', back_populates='reception_stage', uselist=False)
 
-    def _init_(self, reception_date, weight_kg, brix_degrees, ph_value, temperature_celcius, observations, vinification_process_id):
+    def __init__(self, reception_date, weight_kg, brix_degrees, ph_value, temperature_celcius, observations, vinification_process_id):
         self.reception_date = reception_date
         self.weight_kg = weight_kg
         self.brix_degrees = brix_degrees

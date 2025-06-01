@@ -3,6 +3,8 @@ from flask import Blueprint, flash, redirect, render_template, request, url_for
 from models.db import db
 from models.bottling_stage import BottlingStage
 from datetime import datetime
+from models.vinification_process import VinificationProcess  
+
 
 bottling = Blueprint("bottling", __name__, url_prefix="/bottling")
 
@@ -12,15 +14,32 @@ ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif"}
 def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS 
 
+@bottling.route('/', methods=['GET'])
+def get_bottling_stages():
+    bottling_list = BottlingStage.query.all()
+    context = {"bottlings": bottling_list}  # Cambié 'receptions' por 'bottlings'
+    return render_template('embotellamiento/embotellamiento.html', **context)
+
+
+
+@bottling.route("/new", methods=["GET", "POST"])
 @bottling.route("/new", methods=["GET", "POST"])
 def add_bottling_stage():
+    vinification_process_id = request.args.get("vinification_process_id")
+
+    # Traer todos los procesos para el select
+    vinification_processes = VinificationProcess.query.all()
+
     if request.method == "POST":
-        vinification_process_id = request.form["vinification_process_id"]
+        vinification_process_id = request.form.get("vinification_process_id")
+        if not vinification_process_id:
+            flash("No se recibió el ID del proceso de vinificación.", "error")
+            return redirect(request.url)
 
         existing_stage = BottlingStage.query.filter_by(vinification_process_id=vinification_process_id).first()
         if existing_stage:
             flash("Ya existe una etapa de embotellado para este proceso de vinificación.", "error")
-            return redirect(url_for("bottling.add_bottling_stage"))
+            return redirect(url_for("bottling.add_bottling_stage") + f"?vinification_process_id={vinification_process_id}")
 
         new_stage = BottlingStage(
             bottling_date=datetime.strptime(request.form["bottling_date"], "%Y-%m-%d"),
@@ -36,7 +55,14 @@ def add_bottling_stage():
         flash("Etapa de embotellado agregada correctamente.", "success")
         return redirect(url_for("bottling.get_bottling_stages"))
 
-    return render_template("bottling/new.html")
+    return render_template(
+        "embotellamiento/add_embotellamiento.html",
+        vinification_process_id=vinification_process_id,
+        vinification_processes=vinification_processes  # <-- PASAR lista de procesos aquí
+    )
+
+    
+
 
 
 @bottling.route("/edit/<string:id>", methods=["GET", "POST"])

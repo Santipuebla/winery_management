@@ -1,42 +1,59 @@
-<!-- {% extends 'base.html' %}
+{% extends 'base.html' %}
 
 {% block content %}
-  {% if emb is not defined %}
-  {% set emb = {
-    'bottling_date': '2025-05-24',
-    'bottles_quantity': 100,
-    'bottles_format': '750 ml',
-    'bottling_lot_number': 'LOT123',
-    'observations': 'Test observation'
-  } %}
-{% endif %}
-
 <div class="container mt-4">
-  <h2>Edit Bottling</h2>
-  <form method="POST">
-    <div class="mb-3">
-      <label for="bottling_date" class="form-label">Bottling Date</label>
-      <input type="date" class="form-control" id="bottling_date" name="bottling_date" value="{{ emb.bottling_date.strftime('%Y-%m-%d') }}" required>
-    </div>
-    <div class="mb-3">
-      <label for="bottles_quantity" class="form-label">Bottles Quantity</label>
-      <input type="number" class="form-control" id="bottles_quantity" name="bottles_quantity" value="{{ emb.bottles_quantity }}" required>
-    </div>
-    <div class="mb-3">
-      <label for="bottles_format" class="form-label">Bottles Format</label>
-      <input type="text" class="form-control" id="bottles_format" name="bottles_format" value="{{ emb.bottles_format }}" required>
-    </div>
-    <div class="mb-3">
-      <label for="bottling_lot_number" class="form-label">Bottling Lot Number</label>
-      <input type="text" class="form-control" id="bottling_lot_number" name="bottling_lot_number" value="{{ emb.bottling_lot_number }}" required>
-    </div>
-    <div class="mb-3">
-      <label for="observations" class="form-label">Observations</label>
-      <textarea class="form-control" id="observations" name="observations" rows="3" required>{{ emb.observations }}</textarea>
-    </div>
-    <button type="submit" class="btn btn-primary">Update Bottling</button>
-    <a href="{{ url_for('embotellamiento.embotellamiento_page') }}" class="btn btn-secondary">Cancel</a>
-  </form>
+    <h2>Editar Etapa de Embotellado</h2> {# Título corregido #}
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flashes mb-3">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="{{ url_for('bottling.edit_bottling_stage', id=stage.id) }}"> {# Acción corregida #}
+
+        <div class="mb-3">
+            <label for="vinification_process_id" class="form-label">ID del Proceso de Vinificación</label>
+            <input type="text" class="form-control" id="vinification_process_id" name="vinification_process_id"
+                  value="{{ stage.vinification_process_id }}" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="bottling_date" class="form-label">Fecha de Embotellado</label> {# Etiqueta corregida #}
+            <input type="date" class="form-control" id="bottling_date" name="bottling_date"
+                  value="{{ stage.bottling_date.strftime('%Y-%m-%d') }}" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="bottles_quantity" class="form-label">Cantidad de Botellas</label> {# Etiqueta corregida #}
+            <input type="number" class="form-control" id="bottles_quantity" name="bottles_quantity"
+                  value="{{ stage.bottles_quantity }}" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="bottles_format" class="form-label">Formato de Botellas</label> {# Etiqueta corregida #}
+            <input type="text" class="form-control" id="bottles_format" name="bottles_format"
+                  value="{{ stage.bottles_format }}" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="bottling_lot_number" class="form-label">Número de Lote de Embotellado</label> {# Etiqueta corregida #}
+            <input type="text" class="form-control" id="bottling_lot_number" name="bottling_lot_number"
+                  value="{{ stage.bottling_lot_number }}" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="observations" class="form-label">Observaciones</label>
+            <textarea class="form-control" id="observations" name="observations" rows="3">{{ stage.observations }}</textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+        <a href="{{ url_for('bottling.get_bottling_stages') }}" class="btn btn-secondary">Cancelar</a> {# Acción corregida #}
+
+    </form>
 </div>
-{% endblock %} -->
-<h3>HOLA</h3>
+{% endblock %}

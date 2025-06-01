@@ -2,7 +2,7 @@ import uuid
 from models.db import db 
 
 class GrapeVariety(db.Model):
-    _tablename_ = 'grape_variety' 
+    __tablename__ = 'grape_variety' 
 
     id = db.Column(db.String(36), primary_key=True, unique= True, default=lambda: str(uuid.uuid4())) 
     grape_name = db.Column(db.String(50), unique=True, nullable=False) # el nombre de uva es único
@@ -13,7 +13,7 @@ class GrapeVariety(db.Model):
 
     # backref='grape_variety' crea un atributo 'grape_variety' en VinificationProcess
 
-    def _init_(self, grape_name, grape_origin, grape_image=None, status=True):
+    def __init__(self, grape_name, grape_origin, grape_image=None, status=True):
         self.grape_name = grape_name
         self.grape_origin = grape_origin
         self.grape_image = grape_image

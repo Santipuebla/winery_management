@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="{{ url_for('index.index_page') }}">BODEGA</a>
@@ -8,47 +8,22 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('bottling.embotellamiento_page') }}">Variedades de Uva</a>
+                    <a class="nav-link" href="{{url_for('grape_varieties.get_grape_varieties')}}">Variedades de Uva</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('aging.get_aging_stages') }}">Recepción de Uva</a>
+                    <a class="nav-link" href="{{url_for('reception.get_reception_stages')}}">Recepción de Uva</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('aging.get_aging_stages') }}">Fermentación Alcohólica</a>
+                    <a class="nav-link" href="#">Fermentación Alcohólica</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('aging.get_aging_stages') }}">Crianza / Almacenamiento</a>
+                    <a class="nav-link" href="#">Crianza / Almacenamiento</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('bottling.embotellamiento_page') }}">Embotellado</a>
+                    <a class="nav-link" href="{{url_for('bottling.get_bottling_stages')}}">Embotellado</a>
                 </li>
             </ul>
         </div>
     </div>
 </nav>
-=======
-<nav class="navbar navbar-expand-lg bg-body-tertiary">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="#">Navbar</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Features</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Pricing</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link disabled" aria-disabled="true">Disabled</a>
-        </li>
-      </ul>
-    </div>
-  </div>
-</nav>
->>>>>>> 8cf2f17135847ad7fdbacfd311b2e2e06dde608e
+

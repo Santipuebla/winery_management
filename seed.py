@@ -16,9 +16,10 @@ def populate_all():
 
         # ---------- GRAPE VARIETIES ----------
         print(" Cargando variedades de uva...")
-        v1 = GrapeVariety(id="aa7ac020-7dd8-4b43-acd0-b6312b62ef78", grape_name="Variedad 1", grape_origin="Origen 1", grape_image="imagen1.jpg", status=True)
-        v2 = GrapeVariety(id="b465a22b-29f2-4a42-b0f9-4e12da14be2c", grape_name="Variedad 2", grape_origin="Origen 2", grape_image="imagen2.jpg", status=True)
-        v3 = GrapeVariety(id="5c7f680b-c04a-4b8e-b6b8-61bb34943fc5", grape_name="Variedad 3", grape_origin="Origen 3", grape_image="imagen3.jpg", status=True)
+        v1 = GrapeVariety(grape_name="Variedad 1", grape_origin="Origen 1", grape_image="imagen1.jpg", status=True, id="aa7ac020-7dd8-4b43-acd0-b6312b62ef78")
+        v2 = GrapeVariety(grape_name="Variedad 2", grape_origin="Origen 2", grape_image="imagen2.jpg", status=True, id="b465a22b-29f2-4a42-b0f9-4e12da14be2c")
+        v3 = GrapeVariety(grape_name="Variedad 3", grape_origin="Origen 3", grape_image="imagen3.jpg", status=True, id="5c7f680b-c04a-4b8e-b6b8-61bb34943fc5")
+
         db.session.add_all([v1, v2, v3])
 
         # ---------- VINIFICATION PROCESSES ----------
