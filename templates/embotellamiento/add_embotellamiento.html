@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="h4">Agregar Nueva Etapa de Embotellado</h2>
+
+    <div class="card mt-4">
+        <div class="card-header">
+            <h5>Detalles de la Etapa</h5>
+        </div>
+
+        <div class="card-body">
+            <form method="POST" action="{{ url_for('bottling.add_bottling_stage') }}">
+                <div class="mb-3">
+                    <label for="bottling_date" class="form-label">Fecha de Embotellado</label>
+                    <input type="date" class="form-control" id="bottling_date" name="bottling_date" required>
+                </div>
+
+                {# Este campo oculto ya lo tienes y es útil si la relación es preestablecida o viene de otra página #}
+                {# Pero si usas el select, este campo podría ser redundante o usarse como valor por defecto #}
+                <input type="hidden" name="vinification_process_id_hidden" value="{{ vinification_process_id }}">
+
+                <div class="mb-3">
+                    <label for="bottles_quantity" class="form-label">Cantidad de Botellas</label>
+                    <input type="number" class="form-control" id="bottles_quantity" name="bottles_quantity" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="bottles_format" class="form-label">Formato de Botellas</label>
+                    <input type="text" class="form-control" id="bottles_format" name="bottles_format" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="bottling_lot_number" class="form-label">Número de Lote de Embotellado</label>
+                    <input type="text" class="form-control" id="bottling_lot_number" name="bottling_lot_number" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="observations" class="form-label">Observaciones</label>
+                    <textarea class="form-control" id="observations" name="observations" rows="3"></textarea>
+                </div>
+
+                <div class="mb-3">
+    <label for="vinification_process" class="form-label">Proceso de Vinificación Relacionado</label>
+    <select class="form-select" id="vinification_process" name="vinification_process_id" required>
+        <option value="">Seleccione un proceso de vinificación</option>
+        {% for process in vinification_processes %}
+            <option value="{{ process.id }}"
+                {% if vinification_process_id and process.id == vinification_process_id %}selected{% endif %}>
+                {{ process.id }} - {{ process.name }}
+            </option>
+        {% endfor %}
+    </select>
+</div>
+                
+
+                <button type="submit" class="btn btn-primary">Agregar Embotellado</button>
+                <a href="{{ url_for('bottling.get_bottling_stages') }}" class="btn btn-secondary">Cancelar</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

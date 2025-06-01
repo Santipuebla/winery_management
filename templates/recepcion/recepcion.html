@@ -1,0 +1,38 @@
+{% include 'base.html' %}
+
+<div class="container mt-4">
+  <h1>Recepciones de Uva</h1>
+
+  <a href="{{ url_for('reception.add_reception_stage') }}">
+    <button type="button" class="btn btn-dark mb-3">Registrar Recepción</button>
+  </a>
+
+  <div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for reception in receptions %}
+      <div class="col">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title">Recepción del {{ reception.reception_date.strftime('%d/%m/%Y') }}</h5>
+            <p class="card-text"><strong>Peso:</strong> {{ reception.weight_kg }} kg</p>
+            <p class="card-text"><strong>Grados Brix:</strong> {{ reception.brix_degrees }}</p>
+            <p class="card-text"><strong>pH:</strong> {{ reception.ph_value }}</p>
+            <p class="card-text"><strong>Temperatura:</strong> {{ reception.temperature_celcius }} °C</p>
+            <p class="card-text"><strong>Observaciones:</strong> {{ reception.observations }}</p>
+            <p class="card-text"><strong>ID de Vinificación:</strong> {{ reception.vinification_process_id }}</p>
+
+            <form
+              action="{{ url_for('reception.delete_reception_stage', id=reception.id) }}"
+              method="POST"
+              style="display: inline"
+              onsubmit="return confirm('¿Estás seguro que querés eliminar esta recepción?');"
+            >
+              <button type="submit" class="btn btn-danger">Eliminar</button>
+            </form>
+
+            <a href="{{ url_for('reception.edit_reception_stage', id=reception.id) }}" class="btn btn-warning">Editar</a>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>

@@ -1,0 +1,57 @@
+{% include 'base.html' %}
+
+<div class="container mt-4">
+  <h2>Editar Etapa de Fermentación</h2>
+
+  <form method="POST">
+    <div class="mb-3">
+      <label for="fermentation_start_date" class="form-label">Fecha de inicio</label>
+      <input type="date" class="form-control" id="fermentation_start_date" name="fermentation_start_date"
+             value="{{ fermentation.fermentation_start_date.strftime('%Y-%m-%d') if fermentation.fermentation_start_date else '' }}" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="fermentation_end_date" class="form-label">Fecha de fin</label>
+      <input type="date" class="form-control" id="fermentation_end_date" name="fermentation_end_date"
+             value="{{ fermentation.fermentation_end_date.strftime('%Y-%m-%d') if fermentation.fermentation_end_date else '' }}">
+    </div>
+
+    <div class="mb-3">
+      <label for="density" class="form-label">Densidad</label>
+      <input type="number" step="0.01" class="form-control" id="density" name="density"
+             value="{{ fermentation.density }}" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="total_acidity" class="form-label">Acidez total</label>
+      <input type="number" step="0.01" class="form-control" id="total_acidity" name="total_acidity"
+             value="{{ fermentation.total_acidity }}" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="temperature_celsius" class="form-label">Temperatura (°C)</label>
+      <input type="number" step="0.1" class="form-control" id="temperature_celsius" name="temperature_celsius"
+             value="{{ fermentation.temperature_celsius }}" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="observations" class="form-label">Observaciones</label>
+      <textarea class="form-control" id="observations" name="observations" rows="3">{{ fermentation.observations }}</textarea>
+    </div>
+
+    <div class="mb-3">
+      <label for="vinification_process_id" class="form-label">Proceso de Vinificación</label>
+      <select class="form-select" id="vinification_process_id" name="vinification_process_id" required>
+        {% for process in vinification_processes %}
+          <option value="{{ process.id }}"
+            {% if process.id == fermentation.vinification_process_id %}selected{% endif %}>
+            {{ process.id }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <button type="submit" class="btn btn-dark">Guardar Cambios</button>
+    <a href="{{ url_for('fermentation.get_all_fermetations') }}" class="btn btn-secondary">Cancelar</a>
+  </form>
+</div>

@@ -1,0 +1,50 @@
+{% include 'base.html' %}
+
+<div class="container mt-4">
+  <h2>Registrar Etapa de Fermentación</h2>
+
+  <form action="{{ url_for('fermentation.add_fermentation_stage') }}" method="POST">
+    <div class="mb-3">
+      <label for="fermentation_start_date" class="form-label">Fecha de inicio</label>
+      <input type="date" class="form-control" id="fermentation_start_date" name="fermentation_start_date" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="fermentation_end_date" class="form-label">Fecha de fin</label>
+      <input type="date" class="form-control" id="fermentation_end_date" name="fermentation_end_date">
+    </div>
+
+    <div class="mb-3">
+      <label for="density" class="form-label">Densidad</label>
+      <input type="number" step="0.01" class="form-control" id="density" name="density" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="total_acidity" class="form-label">Acidez total</label>
+      <input type="number" step="0.01" class="form-control" id="total_acidity" name="total_acidity" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="temperature_celsius" class="form-label">Temperatura (°C)</label>
+      <input type="number" step="0.1" class="form-control" id="temperature_celsius" name="temperature_celsius" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="observations" class="form-label">Observaciones</label>
+      <textarea class="form-control" id="observations" name="observations" rows="3"></textarea>
+    </div>
+
+    <div class="mb-3">
+      <label for="vinification_process_id" class="form-label">Proceso de Vinificación</label>
+      <select class="form-select" id="vinification_process_id" name="vinification_process_id" required>
+        <option value="" disabled selected>Seleccione un proceso</option>
+        {% for process in vinification_processes %}
+          <option value="{{ process.id }}">{{ process.id }} - {{ process.name if process.name else 'Sin nombre' }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <button type="submit" class="btn btn-dark">Guardar Fermentación</button>
+    <a href="{{ url_for('fermentation.get_all_fermentations') }}" class="btn btn-secondary">Cancelar</a>
+  </form>
+</div>

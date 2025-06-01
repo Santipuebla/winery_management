@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Etapas de Embotellado</h1> {# Título corregido #}
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flashes mb-3">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <a href="{{ url_for('bottling.add_bottling_stage') }}">
+        <button type="button" class="btn btn-dark mb-3">Registrar Etapa de Embotellado</button> {# Texto del botón corregido #}
+    </a>
+
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for bottling in bottlings %} {# Aquí la variable 'bottlings' de la ruta #}
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Fecha de embotellado {{ bottling.bottling_date.strftime('%d/%m/%Y') }}</h5>
+                    <p class="card-text"><strong>Cantidad:</strong> {{ bottling.bottles_quantity }}</p>
+                    <p class="card-text"><strong>Formato:</strong> {{ bottling.bottles_format}}</p>
+                    <p class="card-text"><strong>Numero de Lote:</strong> {{ bottling.bottling_lot_number }}</p> {# Corregido #}
+                    <p class="card-text"><strong>Observaciones:</strong> {{ bottling.observations }}</p> {# Corregido #}
+                    <p class="card-text"><strong>ID de Vinificación:</strong> {{ bottling.vinification_process_id }}</p> {# Corregido #}
+
+                    <form
+                    action="{{ url_for('bottling.delete_bottling_stage', id=bottling.id) }}" {# Corregido el typo #}
+                    method="POST"
+                    style="display: inline"
+                    ononsubmit="return confirm('¿Estás seguro que querés eliminar esta etapa de embotellado?');" {# Texto corregido #}
+                    >
+                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                    </form>
+
+                    <a href="{{ url_for('bottling.edit_bottling_stage', id=bottling.id) }}" class="btn btn-warning">Editar</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
