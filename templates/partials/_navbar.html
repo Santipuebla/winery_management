@@ -17,10 +17,13 @@
                     <a class="nav-link" href="#">Fermentación Alcohólica</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Crianza / Almacenamiento</a>
+                    <a class="nav-link" href="{{url_for('aging.crianza_page')}}">Crianza / Almacenamiento</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{url_for('bottling.get_bottling_stages')}}">Embotellado</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{url_for('vinification_process_bp.get_all_vinification_processes')}}">Procesos de vinificacion</a>
                 </li>
             </ul>
         </div>

@@ -2,39 +2,67 @@
 
 {% block content %}
 <div class="container mt-4">
-  <h2>Editar Recepción</h2>
-  <form method="POST" action="{{ url_for('crianza.crianza_edit_page', crianza_id=crianza.id) }}">
+  <h2>Editar etapa de crianza</h2>
+
+  <form method="POST" action="{{ url_for('aging.edit_aging_stage', id=stage.id) }}">
     <div class="mb-3">
-      <label for="reception_date" class="form-label">Fecha de Recepción</label>
-      <input type="date" class="form-control" id="reception_date" name="reception_date"
-            value="{{ reception.reception_date.strftime('%Y-%m-%d') }}" required>
+      <label for="vinification_process_id" class="form-label">Proceso de Vinificación</label>
+      <select name="vinification_process_id" id="vinification_process_id" class="form-select" required>
+        <option value="">Seleccione un proceso</option>
+        {% for process in vinification_processes %}
+          <option value="{{ process.id }}" {% if process.id == stage.vinification_process_id %}selected{% endif %}>
+            {{ process.grape_variety.grape_name }} - ID: {{ process.id }}
+          </option>
+        {% endfor %}
+      </select>
     </div>
+
     <div class="mb-3">
-      <label for="weight_kg" class="form-label">Peso (Kg)</label>
-      <input type="number" step="0.01" class="form-control" id="weight_kg" name="weight_kg"
-            value="{{ reception.weight_kg }}" required>
+      <label for="aging_start_date" class="form-label">Fecha inicio crianza</label>
+      <input type="date" name="aging_start_date" id="aging_start_date" class="form-control" 
+             value="{{ stage.aging_start_date.strftime('%Y-%m-%d') }}" required>
     </div>
+
     <div class="mb-3">
-      <label for="brix_degrees" class="form-label">Grados Brix</label>
-      <input type="number" step="0.01" class="form-control" id="brix_degrees" name="brix_degrees"
-            value="{{ reception.brix_degrees }}" required>
+      <label for="aging_end_date" class="form-label">Fecha fin crianza</label>
+      <input type="date" name="aging_end_date" id="aging_end_date" class="form-control" 
+             value="{{ stage.aging_end_date.strftime('%Y-%m-%d') }}" required>
     </div>
+
     <div class="mb-3">
-      <label for="ph_value" class="form-label">pH</label>
-      <input type="number" step="0.01" class="form-control" id="ph_value" name="ph_value"
-            value="{{ reception.ph_value }}" required>
+      <label for="vessel_type" class="form-label">Tipo de recipiente</label>
+      <select name="vessel_type" id="vessel_type" class="form-select" required>
+        <option value="">Seleccione tipo</option>
+        <option value="barrica" {% if stage.vessel_type == 'barrica' %}selected{% endif %}>Barrica</option>
+        <option value="tanque" {% if stage.vessel_type == 'tanque' %}selected{% endif %}>Tanque</option>
+        <option value="botella" {% if stage.vessel_type == 'botella' %}selected{% endif %}>Botella</option>
+      </select>
     </div>
+
     <div class="mb-3">
-      <label for="temperature_celcius" class="form-label">Temperatura (°C)</label>
-      <input type="number" step="0.01" class="form-control" id="temperature_celcius" name="temperature_celcius"
-            value="{{ reception.temperature_celcius }}" required>
+      <label for="volume_liters" class="form-label">Volumen (litros)</label>
+      <input type="number" name="volume_liters" id="volume_liters" class="form-control" step="0.01" 
+             value="{{ stage.volume_liters }}" required>
     </div>
+
+    <div class="mb-3">
+      <label for="vessel_identifier" class="form-label">Identificador recipiente</label>
+      <input type="text" name="vessel_identifier" id="vessel_identifier" class="form-control" 
+             value="{{ stage.vessel_identifier }}" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="location" class="form-label">Ubicación</label>
+      <input type="text" name="location" id="location" class="form-control" value="{{ stage.location }}" required>
+    </div>
+
     <div class="mb-3">
       <label for="observations" class="form-label">Observaciones</label>
-      <textarea class="form-control" id="observations" name="observations" rows="3" required>{{ reception.observations }}</textarea>
+      <textarea name="observations" id="observations" class="form-control" rows="3">{{ stage.observations }}</textarea>
     </div>
-    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-    <a href="{{ url_for('crianza.crianza_page') }}" class="btn btn-secondary">Cancelar</a>
+
+    <button type="submit" class="btn btn-primary">Guardar cambios</button>
+    <a href="{{ url_for('aging.get_aging_stages') }}" class="btn btn-secondary">Cancelar</a>
   </form>
 </div>
 {% endblock %}

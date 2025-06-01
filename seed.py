@@ -32,9 +32,9 @@ def populate_all():
         # ---------- RECEPTION STAGE ----------
         print(" Cargando recepciones...")
         db.session.add_all([
-            ReceptionStage(id="b67faa08-ac5c-48e6-a907-ed0a2e5652f0", reception_date="2024-04-01", weight_kg=1100, brix_degrees=22.0, ph_value=3.2, temperature_celcius=17.5, observations="Recepción 1", vinification_process_id=p1.id),
-            ReceptionStage(id="bbb63371-0497-4567-a8ac-5ffe95944199", reception_date="2024-04-02", weight_kg=1150, brix_degrees=23.0, ph_value=3.3, temperature_celcius=18.5, observations="Recepción 2", vinification_process_id=p2.id),
-            ReceptionStage(id="b37556f0-c5d0-4dba-a93b-e203b9e20da7", reception_date="2024-04-03", weight_kg=1200, brix_degrees=24.0, ph_value=3.4, temperature_celcius=19.5, observations="Recepción 3", vinification_process_id=p3.id),
+            ReceptionStage(reception_date="2024-04-01", weight_kg=1100, brix_degrees=22.0, ph_value=3.2, temperature_celcius=17.5, observations="Recepción 1", vinification_process_id=p1.id),
+            ReceptionStage( reception_date="2024-04-02", weight_kg=1150, brix_degrees=23.0, ph_value=3.3, temperature_celcius=18.5, observations="Recepción 2", vinification_process_id=p2.id),
+            ReceptionStage( reception_date="2024-04-03", weight_kg=1200, brix_degrees=24.0, ph_value=3.4, temperature_celcius=19.5, observations="Recepción 3", vinification_process_id=p3.id),
         ])
 
         # ---------- FERMENTATION STAGE ----------

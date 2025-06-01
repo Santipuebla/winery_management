@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2>Procesos de Vinificación</h2>
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Variedad de Uva</th>
+        <th>Fecha Inicio</th>
+        <th>Fecha Fin</th>
+        <th>Etapa Actual</th>
+        <th>Descripción</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for process in vinification_process_list %}
+      <tr>
+        <td>{{ process.id }}</td>
+        <td>{{ process.grape_variety.grape_name }}</td>
+        <td>{{ process.start_date.strftime('%Y-%m-%d') }}</td>
+        <td>{{ process.end_date.strftime('%Y-%m-%d') if process.end_date else 'En curso' }}</td>
+        <td>{{ process.current_stage }}</td>
+        <td>{{ process.description or '-' }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
