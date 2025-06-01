@@ -91,7 +91,7 @@ def edit_bottling_stage(id):
         flash("Etapa de embotellado actualizada exitosamente.", "success")
         return redirect(url_for("bottling.get_bottling_stages"))
 
-    return render_template("bottling/edit.html", stage=stage)
+    return render_template("embotellamiento/edit_embotellamiento.html", stage=stage)
 
 
 @bottling.route("/delete/<string:id>", methods=["POST"])
