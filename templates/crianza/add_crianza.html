@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2>Agregar etapa de crianza</h2>
+
+  <form method="POST" action="{{ url_for('aging.add_aging_stage') }}">
+    <div class="mb-3">
+      <label for="vinification_process_id" class="form-label">Proceso de Vinificación</label>
+      <select name="vinification_process_id" id="vinification_process_id" class="form-select" required>
+        <option value="">Seleccione un proceso</option>
+        {% for process in vinification_processes %}
+          <option value="{{ process.id }}">{{ process.grape_variety.grape_name }} - ID: {{ process.id }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label for="aging_start_date" class="form-label">Fecha inicio crianza</label>
+      <input type="date" name="aging_start_date" id="aging_start_date" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="aging_end_date" class="form-label">Fecha fin crianza</label>
+      <input type="date" name="aging_end_date" id="aging_end_date" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="vessel_type" class="form-label">Tipo de recipiente</label>
+      <select name="vessel_type" id="vessel_type" class="form-select" required>
+        <option value="">Seleccione tipo</option>
+        <option value="barrica">Barrica</option>
+        <option value="tanque">Tanque</option>
+        <option value="botella">Botella</option>
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label for="volume_liters" class="form-label">Volumen (litros)</label>
+      <input type="number" name="volume_liters" id="volume_liters" class="form-control" step="0.01" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="vessel_identifier" class="form-label">Identificador recipiente</label>
+      <input type="text" name="vessel_identifier" id="vessel_identifier" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="location" class="form-label">Ubicación</label>
+      <input type="text" name="location" id="location" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="observations" class="form-label">Observaciones</label>
+      <textarea name="observations" id="observations" class="form-control" rows="3"></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Guardar</button>
+    <a href="{{ url_for('aging.get_aging_stages') }}" class="btn btn-secondary">Cancelar</a>
+  </form>
+</div>
+{% endblock %}
