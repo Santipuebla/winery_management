@@ -6,7 +6,7 @@ from models.bottling_stage import BottlingStage
 from models.aging_stage import AgingStage
 
 class VinificationProcess(db.Model):
-    __tablename__ = 'vinification_process' 
+    _tablename_ = 'vinification_process' 
 
     id = db.Column(db.String(50), primary_key=True,unique=True, default=lambda: str(uuid.uuid4())) # UUIDs son de 36 caracteres con guiones
     start_date = db.Column(db.Date, nullable=False)
@@ -26,7 +26,7 @@ class VinificationProcess(db.Model):
     aging_stage = db.relationship("AgingStage", back_populates="vinification_process", uselist=False)
 
 
-    def __init__(self, start_date, current_stage, grape_variety_id, end_date=None, description=None):
+    def _init_(self, start_date, current_stage, grape_variety_id, end_date=None, description=None):
         self.start_date = start_date
         self.end_date = end_date
         self.current_stage = current_stage

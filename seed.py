@@ -16,10 +16,9 @@ def populate_all():
 
         # ---------- GRAPE VARIETIES ----------
         print(" Cargando variedades de uva...")
-        v1 = GrapeVariety(grape_name="Variedad 1", grape_origin="Origen 1", grape_image="imagen1.jpg", status=True, id="aa7ac020-7dd8-4b43-acd0-b6312b62ef78")
-        v2 = GrapeVariety(grape_name="Variedad 2", grape_origin="Origen 2", grape_image="imagen2.jpg", status=True, id="b465a22b-29f2-4a42-b0f9-4e12da14be2c")
-        v3 = GrapeVariety(grape_name="Variedad 3", grape_origin="Origen 3", grape_image="imagen3.jpg", status=True, id="5c7f680b-c04a-4b8e-b6b8-61bb34943fc5")
-
+        v1 = GrapeVariety(id="aa7ac020-7dd8-4b43-acd0-b6312b62ef78", grape_name="Variedad 1", grape_origin="Origen 1", grape_image="imagen1.jpg", status=True)
+        v2 = GrapeVariety(id="b465a22b-29f2-4a42-b0f9-4e12da14be2c", grape_name="Variedad 2", grape_origin="Origen 2", grape_image="imagen2.jpg", status=True)
+        v3 = GrapeVariety(id="5c7f680b-c04a-4b8e-b6b8-61bb34943fc5", grape_name="Variedad 3", grape_origin="Origen 3", grape_image="imagen3.jpg", status=True)
         db.session.add_all([v1, v2, v3])
 
         # ---------- VINIFICATION PROCESSES ----------
@@ -48,17 +47,17 @@ def populate_all():
         # ---------- BOTTLING STAGE ----------
         print("🍾 Cargando embotellados...")
         db.session.add_all([
-            BottlingStage(id="b4b92ff1-484b-4b16-816f-8b527da5aaf8", bottling_date="2024-05-11", bottles_quantity=900, bottles_format="750ml", bottling_lot_number="LoteB1", observations="Embotellado 1", vinification_process_id=p1.id),
-            BottlingStage(id="3b459560-53a1-4ea2-8268-8dbd0d3f5571", bottling_date="2024-05-12", bottles_quantity=950, bottles_format="750ml", bottling_lot_number="LoteB2", observations="Embotellado 2", vinification_process_id=p2.id),
-            BottlingStage(id="820a106d-df68-455c-9da0-87f9c03d5782", bottling_date="2024-05-13", bottles_quantity=1000, bottles_format="750ml", bottling_lot_number="LoteB3", observations="Embotellado 3", vinification_process_id=p3.id),
+            BottlingStage(bottling_date="2024-05-11", bottles_quantity=900, bottles_format="750ml", bottling_lot_number="LoteB1", observations="Embotellado 1", vinification_process_id=p1.id),
+            BottlingStage(bottling_date="2024-05-12", bottles_quantity=950, bottles_format="750ml", bottling_lot_number="LoteB2", observations="Embotellado 2", vinification_process_id=p2.id),
+            BottlingStage(bottling_date="2024-05-13", bottles_quantity=1000, bottles_format="750ml", bottling_lot_number="LoteB3", observations="Embotellado 3", vinification_process_id=p3.id),
         ])
 
         # ---------- AGING STAGE ----------
         print(" Cargando crianza...")
         db.session.add_all([
-            AgingStage(id="8475e1b6-d942-4361-94c4-6c98746a6e17", aging_start_date="2024-05-11", aging_end_date="2024-06-01", vessel_type="Barrica 1", volume_liters=200.0, vessel_identifier="AG-001", location="Sala 1", observations="Notas 1", vinification_process_id=p1.id),
-            AgingStage(id="45471353-ca31-4a02-b5d5-9cb956d06e26", aging_start_date="2024-05-12", aging_end_date="2024-06-02", vessel_type="Barrica 2", volume_liters=225.0, vessel_identifier="AG-002", location="Sala 2", observations="Notas 2", vinification_process_id=p2.id),
-            AgingStage(id="c58c21d0-220e-4453-9e1c-f5bb3f4e825e", aging_start_date="2024-05-13", aging_end_date="2024-06-03", vessel_type="Barrica 3", volume_liters=250.0, vessel_identifier="AG-003", location="Sala 3", observations="Notas 3", vinification_process_id=p3.id),
+            AgingStage(aging_start_date="2024-05-11", aging_end_date="2024-06-01", vessel_type="Barrica 1", volume_liters=200.0, vessel_identifier="AG-001", location="Sala 1", observations="Notas 1", vinification_process_id=p1.id),
+            AgingStage(aging_start_date="2024-05-12", aging_end_date="2024-06-02", vessel_type="Barrica 2", volume_liters=225.0, vessel_identifier="AG-002", location="Sala 2", observations="Notas 2", vinification_process_id=p2.id),
+            AgingStage(aging_start_date="2024-05-13", aging_end_date="2024-06-03", vessel_type="Barrica 3", volume_liters=250.0, vessel_identifier="AG-003", location="Sala 3", observations="Notas 3", vinification_process_id=p3.id),
         ])
 
         # ---------- COMMIT ----------
