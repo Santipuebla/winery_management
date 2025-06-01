@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+  <h1>Crianza / Almacenamiento</h1>
+<a href="{{ url_for('aging.add_aging_stage') }}">
+  <button type="button" class="btn btn-dark mb-3">Agregar crianza</button>
+</a>
+
+  <!-- Filtros -->
+  <form method="GET" action="{{ url_for('aging.get_aging_stages') }}" class="row g-3 mb-4">
+    <div class="col-md-4">
+      <label for="grape_variety" class="form-label">Variedad de Uva</label>
+      <select name="grape_variety" id="grape_variety" class="form-select">
+        <option value="">Todas</option>
+        {% for variety in grape_varieties %}
+          <option value="{{ variety.id }}" {% if request.args.get('grape_variety') == variety.id %}selected{% endif %}>
+            {{ variety.grape_name }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-4">
+      <label for="container_type" class="form-label">Tipo de Recipiente</label>
+      <select name="container_type" id="container_type" class="form-select">
+        <option value="">Todos</option>
+        <option value="barrica" {% if request.args.get('container_type') == 'barrica' %}selected{% endif %}>Barrica</option>
+        <option value="tanque" {% if request.args.get('container_type') == 'tanque' %}selected{% endif %}>Tanque</option>
+        <option value="botella" {% if request.args.get('container_type') == 'botella' %}selected{% endif %}>Botella</option>
+      </select>
+    </div>
+    <div class="col-md-4 d-flex align-items-end">
+      <button type="submit" class="btn btn-primary w-100">Filtrar</button>
+    </div>
+  </form>
+
+  <!-- Lista de Crianzas -->
+  <div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for aging in aging_wines %}
+    <div class="col">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title">{{ aging.vinification_process.grape_variety.grape_name }}</h5>
+          <p class="card-text">
+            Tipo de recipiente: {{ aging.vessel_type }}<br>
+            Tiempo de crianza: {{ aging.observations }}
+          </p>
+        </div>
+        <div class="card-footer">
+          <form action="{{ url_for('aging.delete_aging_stage', id=aging.id) }}" method="POST" style="display: inline"
+            onsubmit="return confirm('¿Estás seguro que querés eliminar este registro?');">
+            <button type="submit" class="btn btn-danger">Eliminar</button>
+          </form>
+          <a href="{{ url_for('aging.edit_aging_stage', id=aging.id) }}" class="btn btn-warning">Editar</a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
