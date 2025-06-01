@@ -36,13 +36,17 @@
         </div>
 
         <div class="mb-3">
-            <label for="vinification_process_id" class="form-label">ID del proceso de vinificación</label>
-            <input type="text" class="form-control" name="vinification_process_id" required>
+            <label for="vinification_process_id" class="form-label">Proceso de vinificación</label>
+            <select name="vinification_process_id" class="form-control" required>
+                <option value="" disabled selected>Seleccioná un proceso</option>
+                {% for process in vinification_processes %}
+                    <option value="{{ process.id }}">ID: {{ process.id }} - {{ process.name }}</option>
+                {% endfor %}
+            </select>
         </div>
 
         <button type="submit" class="btn btn-primary">Guardar</button>
         <a href="{{ url_for('fermentation.get_all_fermetations') }}" class="btn btn-secondary">Cancelar</a>
-
     </form>
 </div>
 {% endblock %}
