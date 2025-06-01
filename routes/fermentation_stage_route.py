@@ -1,8 +1,8 @@
-from models.db import db
-from flask import Blueprint, jsonify, request, render_template
-from models.grape_variety import GrapeVariety 
+from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from models.vinification_process import VinificationProcess
+from models.db import db
 from models.fermentation_stage import FermentationStage
+from datetime import datetime
 
 import datetime
 
@@ -17,9 +17,9 @@ def allowed_file(filename):
 
 @fermentation.route('/get_all_fermetations', methods=['GET'])
 def get_all_fermetations():
-    processes = FermentationStage.query.all()
-    context = {"fermentations": processes}
-    return render_template("fermentation/fermentacion.html", **context)
+    fermentations = FermentationStage.query.all()
+    context = {"fermentations": fermentations}
+    return render_template("fermentation/fermentation.html", **context)
 
 
 @fermentation.route('/<uuid:process_id>/fermentation_stage', methods=['GET'])
@@ -34,81 +34,40 @@ def get_fermentation_stage(process_id):
     
     return jsonify({"success": True, "data": fermentation_stage.serialize()}), 200
 
-@fermentation.route('/<uuid:process_id>/fermentation_stage', methods=['POST'])
-def create_fermentation_stage(process_id):
-    vinification_process = FermentationStage.query.get(str(process_id))
-    if not vinification_process:
-        return jsonify({"success": False, "message": "Proceso de Vinificación no encontrado."}), 404
-
-    # Validar si ya existe una etapa de fermentación para este proceso (debido a unique=True)
-    if vinification_process.fermentation_stage:
-        return jsonify({"success": False, "message": "Este proceso de vinificación ya tiene una etapa de fermentación asociada."}), 409 #  Conflict
-
-    data = request.get_json()
-    if not data:
-        return jsonify({"success": False, "message": "Datos JSON no proporcionados."}), 400
-
-    errors = {}
-
-    fermentation_start_date_str = data.get('fermentation_start_date')
-    density = data.get('density')
-    total_acidity = data.get('total_acidity')
-    temperature_celsius = data.get('temperature_celsius')
-    fermentation_end_date_str = data.get('fermentation_end_date')
-    observations = data.get('observations')
-
-    # ConvertiMOS y validaMOS LAS fechas
-    fermentation_start_date = None
-    if not fermentation_start_date_str:
-        errors['fermentation_start_date'] = "La fecha de inicio de fermentación es requerida."
-    else:
+@fermentation.route("/add", methods=["GET", "POST"])
+def add_fermentation_stage():
+    if request.method == "POST":
         try:
-            fermentation_start_date = datetime.datetime.strptime(fermentation_start_date_str, '%Y-%m-%d').date()
-        except ValueError:
-            errors['fermentation_start_date'] = "Formato de fecha de inicio inválido (YYYY-MM-DD)."
-    
-    fermentation_end_date = None
-    if fermentation_end_date_str:
-        try:
-            fermentation_end_date = datetime.datetime.strptime(fermentation_end_date_str, '%Y-%m-%d').date()
-        except ValueError:
-            errors['fermentation_end_date'] = "Formato de fecha de fin inválido (YYYY-MM-DD)."
-    
-    # Validamos si la fecha de fin es anterior a la de inicio
-    if fermentation_start_date and fermentation_end_date and fermentation_end_date < fermentation_start_date:
-        errors['fermentation_end_date'] = "La fecha de fin no puede ser anterior a la fecha de inicio."
+            fermentation_start_date = datetime.strptime(request.form["fermentation_start_date"], "%Y-%m-%d").date()
+            fermentation_end_date = datetime.strptime(request.form["fermentation_end_date"], "%Y-%m-%d").date()
+            density = float(request.form["density"])
+            total_acidity = float(request.form["total_acidity"])
+            temperature_celsius = float(request.form["temperature_celsius"])
+            observations = request.form.get("observations", "")
+            vinification_process_id = request.form["vinification_process_id"]
 
-    # Validar números (densidad, acidez, temperatura)
-    if not isinstance(density, (int, float)):
-        errors['density'] = "La densidad es requerida y debe ser un número."
-    if not isinstance(total_acidity, (int, float)):
-        errors['total_acidity'] = "La acidez total es requerida y debe ser un número."
-    if not isinstance(temperature_celsius, (int, float)):
-        errors['temperature_celsius'] = "La temperatura es requerida y debe ser un número."
+            new_stage = FermentationStage(
+                fermentation_start_date=fermentation_start_date,
+                fermentation_end_date=fermentation_end_date,
+                density=density,
+                total_acidity=total_acidity,
+                temperature_celsius=temperature_celsius,
+                observations=observations,
+                vinification_process_id=vinification_process_id
+            )
 
-    # Validar observaciones (opcional pero puede tener límite de longitud si es Text)
-    if observations is not None and not isinstance(observations, str):
-        errors['observations'] = "Las observaciones deben ser texto."
+            db.session.add(new_stage)
+            db.session.commit()
+            flash("Etapa de fermentación registrada correctamente", "success")
+            return redirect(url_for("fermentation.get_all_fermetations"))
+        except Exception as e:
+            db.session.rollback()
+            flash(f"Error al guardar la etapa de fermentación: {str(e)}", "danger")
+            return redirect(request.url)
 
-    if errors:
-        return jsonify({"success": False, "message": "Datos de entrada inválidos.", "errors": errors}), 422
-
-    try:
-        new_fermentation_stage = FermentationStage(
-            fermentation_start_date=fermentation_start_date,
-            fermentation_end_date=fermentation_end_date,
-            density=density,
-            total_acidity=total_acidity,
-            temperature_celsius=temperature_celsius,
-            observations=observations,
-            vinification_process_id=str(process_id)
-        )
-        db.session.add(new_fermentation_stage)
-        db.session.commit()
-        return jsonify({"success": True, "data": new_fermentation_stage.serialize()}), 201
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({"success": False, "message": f"Error al crear la etapa de fermentación: {str(e)}"}), 500
+    # 👇 Esto trae todos los procesos de vinificación para el select
+    vinification_processes = VinificationProcess.query.all()
+    return render_template("fermentation/add_fermentation.html", vinification_processes=vinification_processes)
 
 @fermentation.route('/<uuid:process_id>/fermentation_stage', methods=['PUT'])
 def update_fermentation_stage(process_id):

@@ -1,0 +1,38 @@
+{% include 'base.html' %}
+
+<div class="container mt-4">
+  <h1>Etapas de Fermentación</h1>
+
+  <a href="{{ url_for('fermentation.add_fermentation_stage') }}">
+    <button type="button" class="btn btn-dark mb-3">Registrar Fermentación</button>
+  </a>
+
+  <div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for fermentation in fermentations %}
+      <div class="col">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title">Inicio: {{ fermentation.fermentation_start_date.strftime('%d/%m/%Y') }}</h5>
+            <p class="card-text"><strong>Fin:</strong> {{ fermentation.fermentation_end_date.strftime('%d/%m/%Y') }}</p>
+            <p class="card-text"><strong>Densidad:</strong> {{ fermentation.density }}</p>
+            <p class="card-text"><strong>Acidez Total:</strong> {{ fermentation.total_acidity }}</p>
+            <p class="card-text"><strong>Temperatura:</strong> {{ fermentation.temperature_celsius }} °C</p>
+            <p class="card-text"><strong>Observaciones:</strong> {{ fermentation.observations or 'Ninguna' }}</p>
+            <p class="card-text"><strong>ID de Vinificación:</strong> {{ fermentation.vinification_process_id }}</p>
+
+            <form
+              action="{{ url_for('fermentation.delete_fermentation_stage', id=fermentation.id) }}"
+              method="POST"
+              style="display: inline"
+              onsubmit="return confirm('¿Estás seguro que querés eliminar esta fermentación?');"
+            >
+              <button type="submit" class="btn btn-danger">Eliminar</button>
+            </form>
+
+            <a href="{{ url_for('fermentation.edit_fermentation_stage', id=fermentation.id) }}" class="btn btn-warning">Editar</a>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>

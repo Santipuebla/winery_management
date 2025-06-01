@@ -1,17 +1,36 @@
+{%include 'base.html' %}
+ <div class="container mt-4">
 <h1>Variedades de Uva</h1>
 
 <a href="{{ url_for('grape_varieties.get_add_grape_variety') }}">
-    <button>Crear variedad</button>
+    <button type="button" class="btn btn-dark mb-3">Crear variedad</button>
 </a>
 
-{% for variety in grape_varieties %}
-    <div>
-        <h3>{{ variety.grape_name }}</h3>
-        <p>Origen: {{ variety.grape_origin }}</p>
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+  {% for variety in grape_varieties %}
+  
+    <div class="col">
+      <div class="card">
         {% if variety.grape_image %}
-            <img src="{{ url_for('static', filename='grape_varieties/' ~ variety.grape_image) }}" width="200">
+          <img src="{{ url_for('static', filename='grape_varieties/' ~ variety.grape_image) }}" width="200">
         {% else %}
-            <p>Sin imagen</p>
+          <p>Sin imagen</p>
         {% endif %}
+        <div class="card-body">
+          <h5 class="card-title">{{ variety.grape_name }}</h5>
+          <p class="card-text">Origen: {{ variety.grape_origin }}</p>
+          <form
+              action="{{url_for('grape_varieties.delete_grape_variety', id=variety.id)}}"
+              method="POST"
+              style="display: inline"
+              onsubmit="return confirm('¿Estás seguro que querés eliminar este producto?');"
+            >
+           <button type="submit" class="btn btn-danger">Eliminar</button>
+           </form>
+            <a href="{{url_for('grape_varieties.edit_grape_variety', id=variety.id)}}" class="btn btn-warning">Editar</a>
+        </div>
+      </div>
     </div>
-{% endfor %}
+  {% endfor %}
+</div>

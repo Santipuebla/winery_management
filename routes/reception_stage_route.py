@@ -3,6 +3,7 @@ from flask import Blueprint, flash, redirect, render_template, request, url_for
 from models.db import db
 from models.reception_stage import ReceptionStage
 from datetime import datetime
+from models.vinification_process import VinificationProcess
 
 reception = Blueprint("reception", __name__, url_prefix="/reception")
 
@@ -36,18 +37,22 @@ def add_reception_stage():
         db.session.add(new_stage)
         db.session.commit()
         flash("Se recepcionó correctamente.", "success")
-        return redirect(url_for("reception.get_reception_stages"))  
+        return redirect(url_for("reception.get_reception_stages"))
 
-    return render_template("reception/new.html")
+    # GET: Traer los procesos para mostrar en el select
+    vinification_processes = VinificationProcess.query.all()
+    return render_template("recepcion/add_recepcion.html", vinification_processes=vinification_processes)
 
 
 @reception.route('/edit/<string:id>', methods=['GET', 'POST'])
 def edit_reception_stage(id):
     stage = ReceptionStage.query.get_or_404(id)
+    vinification_processes = VinificationProcess.query.all()
 
-    if request.method == "POST":
+    if request.method == 'POST':
         vinification_process_id = request.form["vinification_process_id"]
 
+        # Validar que no exista otra etapa con el mismo proceso (excluyendo la actual)
         existing_stage = ReceptionStage.query.filter(
             ReceptionStage.vinification_process_id == vinification_process_id,
             ReceptionStage.id != id
@@ -56,19 +61,26 @@ def edit_reception_stage(id):
             flash("Ya existe otra etapa de recepción para este proceso de vinificación.", "error")
             return redirect(url_for("reception.edit_reception_stage", id=id))
 
-        stage.reception_date = datetime.strptime(request.form["reception_date"], "%Y-%m-%d")
-        stage.weight_kg = float(request.form["weight_kg"])
-        stage.brix_degrees = float(request.form["brix_degrees"])
-        stage.ph_value = float(request.form["ph_value"])
-        stage.temperature_celcius = float(request.form["temperature_celcius"])
-        stage.observations = request.form["observations"]
-        stage.vinification_process_id = vinification_process_id
+        # Actualizar campos
+        try:
+            stage.reception_date = datetime.strptime(request.form["reception_date"], "%Y-%m-%d")
+            stage.weight_kg = float(request.form["weight_kg"])
+            stage.brix_degrees = float(request.form["brix_degrees"])
+            stage.ph_value = float(request.form["ph_value"])
+            stage.temperature_celcius = float(request.form["temperature_celcius"])
+            stage.observations = request.form["observations"]
+            stage.vinification_process_id = vinification_process_id
 
-        db.session.commit()
-        flash("Datos actualizados correctamente.", "success")
-        return redirect(url_for("reception.get_reception_stages"))  
+            db.session.commit()
+            flash("Datos actualizados correctamente.", "success")
+            return redirect(url_for("reception.get_reception_stages"))
+        except Exception as e:
+            db.session.rollback()
+            flash(f"Error al actualizar los datos: {e}", "error")
+            return redirect(url_for("reception.edit_reception_stage", id=id))
 
-    return render_template("reception/edit.html", stage=stage)
+    # GET: renderiza el formulario con datos
+    return render_template('recepcion/edit_recepcion.html', stage=stage, vinification_processes=vinification_processes)
 
 
 @reception.route('/delete/<string:id>', methods=['POST'])
@@ -83,5 +95,6 @@ def delete_reception_stage(id):
 
 @reception.route('/', methods=['GET'])
 def get_reception_stages():
-    stages = ReceptionStage.query.all()
-    return render_template('reception/list.html', stages=stages)
+    receptions = ReceptionStage.query.all()
+    context = { "receptions": receptions }
+    return render_template('recepcion/recepcion.html',**context)
