@@ -1,5 +1,5 @@
 {%include 'base.html' %}
- <div class="container mt-4">
+<div class="container mt-4">
 <h1>Variedades de Uva</h1>
 
 <a href="{{ url_for('grape_varieties.get_add_grape_variety') }}">
@@ -26,8 +26,8 @@
               style="display: inline"
               onsubmit="return confirm('¿Estás seguro que querés eliminar este producto?');"
             >
-           <button type="submit" class="btn btn-danger">Eliminar</button>
-           </form>
+          <button type="submit" class="btn btn-danger">Eliminar</button>
+          </form>
             <a href="{{url_for('grape_varieties.edit_grape_variety', id=variety.id)}}" class="btn btn-warning">Editar</a>
         </div>
       </div>

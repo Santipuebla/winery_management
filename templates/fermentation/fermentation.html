@@ -12,19 +12,21 @@
       <div class="col">
         <div class="card h-100">
           <div class="card-body">
-            <h5 class="card-title">Inicio: {{ fermentation.fermentation_start_date.strftime('%d/%m/%Y') }}</h5>
-            <p class="card-text"><strong>Fin:</strong> {{ fermentation.fermentation_end_date.strftime('%d/%m/%Y') }}</p>
+            <h5 class="card-title">
+              Fermentación del {{ fermentation.fermentation_start_date.strftime('%d/%m/%Y') }}
+              al {{ fermentation.fermentation_end_date.strftime('%d/%m/%Y') }}
+            </h5>
             <p class="card-text"><strong>Densidad:</strong> {{ fermentation.density }}</p>
-            <p class="card-text"><strong>Acidez Total:</strong> {{ fermentation.total_acidity }}</p>
+            <p class="card-text"><strong>Acidez total:</strong> {{ fermentation.total_acidity }}</p>
             <p class="card-text"><strong>Temperatura:</strong> {{ fermentation.temperature_celsius }} °C</p>
-            <p class="card-text"><strong>Observaciones:</strong> {{ fermentation.observations or 'Ninguna' }}</p>
+            <p class="card-text"><strong>Observaciones:</strong> {{ fermentation.observations or 'Sin observaciones' }}</p>
             <p class="card-text"><strong>ID de Vinificación:</strong> {{ fermentation.vinification_process_id }}</p>
 
             <form
               action="{{ url_for('fermentation.delete_fermentation_stage', id=fermentation.id) }}"
               method="POST"
               style="display: inline"
-              onsubmit="return confirm('¿Estás seguro que querés eliminar esta fermentación?');"
+              onsubmit="return confirm('¿Estás seguro que querés eliminar esta etapa de fermentación?');"
             >
               <button type="submit" class="btn btn-danger">Eliminar</button>
             </form>

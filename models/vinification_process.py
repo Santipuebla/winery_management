@@ -6,7 +6,11 @@ from models.bottling_stage import BottlingStage
 from models.aging_stage import AgingStage
 
 class VinificationProcess(db.Model):
+
     __tablename__ = 'vinification_process' 
+
+    _tablename_ = 'vinification_process' 
+
 
     id = db.Column(db.String(50), primary_key=True,unique=True, default=lambda: str(uuid.uuid4())) # UUIDs son de 36 caracteres con guiones
     start_date = db.Column(db.Date, nullable=False)

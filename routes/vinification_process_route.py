@@ -11,4 +11,3 @@ def get_all_vinification_processes():
     vinification_process_list = VinificationProcess.query.all()
     context = { "vinification_process_list": vinification_process_list }
     return render_template('vinificacion_process/vinificacion_process.html',**context)
-

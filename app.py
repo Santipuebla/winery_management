@@ -6,6 +6,7 @@ from routes.bottling_stage_route import bottling
 from routes.aging_stage_route import aging
 from routes.grape_variety_route import grape_varieties
 from routes.reception_stage_route import reception
+from routes.vinification_process_route import vinification_process_bp
 from routes.fermentation_stage_route import fermentation
 
 
@@ -16,6 +17,7 @@ app.register_blueprint(bottling)
 app.register_blueprint(aging)
 app.register_blueprint(grape_varieties)
 app.register_blueprint(reception)
+app.register_blueprint(vinification_process_bp)
 app.register_blueprint(fermentation)
 app.config["SQLALCHEMY_DATABASE_URI"]= DATABASE_CONNECTION_URI
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
@@ -33,5 +35,5 @@ with app.app_context():
 
 
 if __name__ == '__main__':
-    print("Estoy ejecutando la aplicacion")
+    print("Estoy ejecutando la aplicacion!")
     app.run(debug=True)

@@ -1,8 +1,8 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
-from models.vinification_process import VinificationProcess
 from models.db import db
+from flask import Blueprint, jsonify, request, render_template
+from models.grape_variety import GrapeVariety 
+from models.vinification_process import VinificationProcess
 from models.fermentation_stage import FermentationStage
-from datetime import datetime
 
 import datetime
 
@@ -17,8 +17,8 @@ def allowed_file(filename):
 
 @fermentation.route('/get_all_fermetations', methods=['GET'])
 def get_all_fermetations():
-    fermentations = FermentationStage.query.all()
-    context = {"fermentations": fermentations}
+    processes = FermentationStage.query.all()
+    context = {"fermentations": processes}
     return render_template("fermentation/fermentation.html", **context)
 
 
@@ -34,19 +34,21 @@ def get_fermentation_stage(process_id):
     
     return jsonify({"success": True, "data": fermentation_stage.serialize()}), 200
 
+from flask import redirect, url_for, flash
+
 @fermentation.route("/add", methods=["GET", "POST"])
 def add_fermentation_stage():
     if request.method == "POST":
         try:
-            fermentation_start_date = datetime.strptime(request.form["fermentation_start_date"], "%Y-%m-%d").date()
-            fermentation_end_date = datetime.strptime(request.form["fermentation_end_date"], "%Y-%m-%d").date()
-            density = float(request.form["density"])
-            total_acidity = float(request.form["total_acidity"])
-            temperature_celsius = float(request.form["temperature_celsius"])
-            observations = request.form.get("observations", "")
-            vinification_process_id = request.form["vinification_process_id"]
+            fermentation_start_date = datetime.datetime.strptime(request.form.get("fermentation_start_date"), "%Y-%m-%d").date()
+            fermentation_end_date = datetime.datetime.strptime(request.form.get("fermentation_end_date"), "%Y-%m-%d").date()
+            density = float(request.form.get("density"))
+            total_acidity = float(request.form.get("total_acidity"))
+            temperature_celsius = float(request.form.get("temperature_celsius"))
+            observations = request.form.get("observations")
+            vinification_process_id = request.form.get("vinification_process_id")
 
-            new_stage = FermentationStage(
+            new_fermentation = FermentationStage(
                 fermentation_start_date=fermentation_start_date,
                 fermentation_end_date=fermentation_end_date,
                 density=density,
@@ -55,19 +57,18 @@ def add_fermentation_stage():
                 observations=observations,
                 vinification_process_id=vinification_process_id
             )
-
-            db.session.add(new_stage)
+            db.session.add(new_fermentation)
             db.session.commit()
-            flash("Etapa de fermentación registrada correctamente", "success")
-            return redirect(url_for("fermentation.get_all_fermetations"))
+            flash("Fermentación registrada con éxito", "success")
+            return redirect(url_for("fermentation.get_all_fermentations"))
         except Exception as e:
             db.session.rollback()
-            flash(f"Error al guardar la etapa de fermentación: {str(e)}", "danger")
-            return redirect(request.url)
+            flash(f"Error al registrar la fermentación: {str(e)}", "danger")
+            return redirect(url_for("fermentation.add_fermentation_stage"))
 
-    # 👇 Esto trae todos los procesos de vinificación para el select
     vinification_processes = VinificationProcess.query.all()
     return render_template("fermentation/add_fermentation.html", vinification_processes=vinification_processes)
+
 
 @fermentation.route('/<uuid:process_id>/fermentation_stage', methods=['PUT'])
 def update_fermentation_stage(process_id):
@@ -140,21 +141,50 @@ def update_fermentation_stage(process_id):
         db.session.rollback()
         return jsonify({"success": False, "message": f"Error al actualizar la etapa de fermentación: {str(e)}"}), 500
 
+@fermentation.route('/edit/<uuid:id>', methods=['GET', 'POST'])
+def edit_fermentation_stage(id):
+    fermentation = FermentationStage.query.get_or_404(str(id))
+    vinification_processes = VinificationProcess.query.all()
 
-@fermentation.route('/<uuid:process_id>/fermentation_stage', methods=['DELETE'])
-def delete_fermentation_stage(process_id):
-    vinification_process = FermentationStage.query.get(str(process_id))
-    if not vinification_process:
-        return jsonify({"success": False, "message": "Proceso de Vinificación no encontrado."}), 404
+    if request.method == 'POST':
+        try:
+            fermentation.fermentation_start_date = datetime.datetime.strptime(
+                request.form['fermentation_start_date'], '%Y-%m-%d').date()
 
-    fermentation_stage = vinification_process.fermentation_stage
-    if not fermentation_stage:
-        return jsonify({"success": False, "message": "Etapa de fermentación para este proceso no encontrada."}), 404
+            fermentation_end_date_str = request.form.get('fermentation_end_date')
+            fermentation.fermentation_end_date = (
+                datetime.datetime.strptime(fermentation_end_date_str, '%Y-%m-%d').date()
+                if fermentation_end_date_str else None
+            )
 
+            fermentation.density = float(request.form['density'])
+            fermentation.total_acidity = float(request.form['total_acidity'])
+            fermentation.temperature_celsius = float(request.form['temperature_celsius'])
+            fermentation.observations = request.form.get('observations')
+            fermentation.vinification_process_id = request.form['vinification_process_id']
+
+            db.session.commit()
+            return redirect(url_for('fermentation.get_all_fermetations'))
+
+        except Exception as e:
+            db.session.rollback()
+            return f"Error al actualizar: {e}", 500
+
+    return render_template(
+        "fermentation/edit_fermentation.html",
+        fermentation=fermentation,
+        vinification_processes=vinification_processes
+    )
+
+
+@fermentation.route('/delete/<uuid:id>', methods=['POST'])
+def delete_fermentation_stage(id):
+    fermentation = FermentationStage.query.get_or_404(str(id))
     try:
-        db.session.delete(fermentation_stage)
+        db.session.delete(fermentation)
         db.session.commit()
-        return jsonify({"success": True, "message": "Etapa de fermentación eliminada correctamente."}), 204 # 204 No Content
+        return redirect(url_for('fermentation.get_all_fermetations'))  # corregido aquí
     except Exception as e:
         db.session.rollback()
-        return jsonify({"success": False, "message": f"Error al eliminar la etapa de fermentación: {str(e)}"}), 500
+        return f"Error al eliminar: {e}", 500
+

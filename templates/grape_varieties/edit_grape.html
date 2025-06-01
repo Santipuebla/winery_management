@@ -12,20 +12,20 @@
     <div class="mb-3">
       <label for="grape_name" class="form-label">Nombre de la Uva</label>
       <input type="text" class="form-control" id="grape_name" name="grape_name"
-             value="{{ variety.grape_name }}" required>
+            value="{{ variety.grape_name }}" required>
     </div>
 
     <!-- Origen -->
     <div class="mb-3">
       <label for="grape_origin" class="form-label">Origen</label>
       <input type="text" class="form-control" id="grape_origin" name="grape_origin"
-             value="{{ variety.grape_origin }}" required>
+            value="{{ variety.grape_origin }}" required>
     </div>
 
     <!-- Activa o no -->
     <div class="form-check mb-3">
       <input class="form-check-input" type="checkbox" value="1" id="status" name="status"
-             {% if variety.status %}checked{% endif %}>
+            {% if variety.status %}checked{% endif %}>
       <label class="form-check-label" for="status">Activa</label>
     </div>
 
@@ -34,7 +34,7 @@
       <label class="form-label">Imagen actual</label><br>
       {% if variety.grape_image %}
         <img src="{{ url_for('static', filename='grape_varieties/' ~ variety.grape_image) }}"
-             alt="Imagen actual" width="200" class="mb-2">
+            alt="Imagen actual" width="200" class="mb-2">
       {% else %}
         <p class="text-muted">Sin imagen</p>
       {% endif %}
