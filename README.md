@@ -45,7 +45,7 @@ On Windows, Linux, and macOS:
 
 📜 **Class Diagram**
 
-![Class Diagram](DiagramWinery.jpg)
+![Class Diagram](DiagramWinery.jpeg)
 
 
 🧑‍💻 **Team Members and Contributions**
